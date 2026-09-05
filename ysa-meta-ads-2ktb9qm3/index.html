@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meta広告 配信までのロードマップ - YSA スポーツと医科学のジム</title>
+<style>
+  :root {
+    --ysa: #1e3a5f;
+    --ysa-light: #4a6b8f;
+    --ysa-soft: #eef2f7;
+    --quod: #c96538;
+    --quod-soft: #fbeee7;
+    --bg: #ffffff;
+    --bg-soft: #fafaf8;
+    --text: #1a1a1a;
+    --sub: #5c5c5c;
+    --muted: #8a8a8a;
+    --border: #e5e5e5;
+    --border-strong: #cccccc;
+    --success: #2d7a4f;
+    --success-bg: #e3f0e8;
+    --warning: #b8860b;
+    --warning-bg: #fbf3dc;
+    --neutral: #8a8a8a;
+    --neutral-bg: #eeeeee;
+    --accent-bg: #f5f2ec;
+    --danger: #c94836;
+    --info-bg: #eef4fa;
+    --info-border: #cde0f2;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: 'Yu Gothic', 'YuGothic', 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Meiryo', sans-serif;
+    color: var(--text);
+    background: var(--bg-soft);
+    line-height: 1.7;
+    font-size: 14px;
+    font-feature-settings: "palt";
+  }
+  .page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 32px 40px 96px;
+    background: var(--bg);
+  }
+
+  header.doc-header {
+    border-bottom: 2px solid var(--ysa);
+    padding-bottom: 20px;
+    margin-bottom: 28px;
+  }
+  .eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--quod);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 24px;
+    line-height: 1.4;
+    margin: 0 0 6px;
+    color: var(--ysa);
+    letter-spacing: 0.02em;
+  }
+  .doc-sub {
+    color: var(--sub);
+    font-size: 12px;
+    margin: 4px 0 0;
+  }
+
+  .dashboard {
+    background: linear-gradient(180deg, #f8f6f0 0%, #f2eee5 100%);
+    border: 1px solid #e5dcc5;
+    border-radius: 8px;
+    padding: 24px 28px;
+    margin: 24px 0 28px;
+  }
+  .dash-row-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .dash-label {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--quod);
+    font-weight: 600;
+  }
+  .dash-percent {
+    font-size: 42px;
+    font-weight: 700;
+    color: var(--ysa);
+    line-height: 1;
+  }
+  .dash-percent .unit {
+    font-size: 20px;
+    color: var(--sub);
+    margin-left: 4px;
+  }
+  .dash-percent .sub-count {
+    font-size: 12px;
+    color: var(--muted);
+    margin-left: 12px;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+  }
+  .progress-bar {
+    height: 12px;
+    background: white;
+    border: 1px solid #e0d5b8;
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--ysa) 0%, var(--ysa-light) 100%);
+    transition: width 0.4s ease;
+    border-radius: 6px 0 0 6px;
+  }
+  .focus-box {
+    margin-top: 20px;
+    background: white;
+    border-radius: 6px;
+    padding: 14px 18px;
+    border-left: 4px solid var(--quod);
+  }
+  .focus-title {
+    font-size: 11px;
+    color: var(--quod);
+    letter-spacing: 0.15em;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .focus-items {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 13px;
+    line-height: 1.9;
+  }
+  .focus-items li {
+    padding-left: 20px;
+    position: relative;
+  }
+  .focus-items li::before {
+    content: "▶";
+    position: absolute;
+    left: 4px;
+    color: var(--quod);
+    font-size: 8px;
+    top: 8px;
+  }
+
+  .role-note {
+    background: white;
+    border: 1px solid var(--info-border);
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin: 20px 0 12px;
+    font-size: 12px;
+    color: var(--sub);
+    line-height: 1.7;
+  }
+  .role-note strong { color: var(--ysa); }
+
+  section { margin-bottom: 40px; }
+  h2 {
+    font-size: 18px;
+    margin: 0 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+    color: var(--ysa);
+    letter-spacing: 0.03em;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  h2 .num {
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+    text-align: center;
+    background: var(--ysa);
+    color: white;
+    border-radius: 50%;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .lead {
+    color: var(--sub);
+    font-size: 12px;
+    margin-bottom: 20px;
+  }
+
+  /* 登場人物図解 */
+  .cast-diagram {
+    background: white;
+    border: 2px solid var(--ysa);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .cast-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ysa);
+    margin-bottom: 4px;
+    letter-spacing: 0.05em;
+  }
+  .cast-sub {
+    font-size: 11px;
+    color: var(--sub);
+    margin-bottom: 16px;
+  }
+  .cast-bm {
+    border: 2px dashed var(--ysa);
+    border-radius: 6px;
+    padding: 16px 16px 8px;
+    background: var(--ysa-soft);
+    position: relative;
+  }
+  .cast-bm-label {
+    position: absolute;
+    top: -10px;
+    left: 12px;
+    background: white;
+    padding: 0 8px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ysa);
+    letter-spacing: 0.05em;
+  }
+  .cast-bm-note {
+    font-size: 11px;
+    color: var(--sub);
+    margin-bottom: 12px;
+    padding-left: 4px;
+  }
+  .cast-items {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .cast-item {
+    background: white;
+    border: 1px solid var(--ysa-light);
+    border-radius: 4px;
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .cast-item.full { grid-column: 1 / -1; }
+  .cast-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    background: var(--ysa);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .cast-icon.ig { background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045); }
+  .cast-icon.fb { background: #1877f2; }
+  .cast-icon.money { background: var(--quod); }
+  .cast-name {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+  }
+  .cast-desc {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .cast-pixel-row {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--border-strong);
+  }
+  .cast-pixel-arrow {
+    text-align: center;
+    color: var(--quod);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    margin: 4px 0;
+  }
+  .cast-pixel {
+    background: var(--quod-soft);
+    border: 1px solid var(--quod);
+    border-radius: 4px;
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .cast-personal {
+    background: white;
+    border: 2px solid var(--ysa-light);
+    border-radius: 6px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 4px;
+  }
+  .cast-personal-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--ysa-light);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .cast-personal-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ysa);
+    line-height: 1.3;
+  }
+  .cast-personal-desc {
+    font-size: 11px;
+    color: var(--sub);
+    margin-top: 3px;
+    line-height: 1.5;
+  }
+  .cast-down-arrow {
+    text-align: center;
+    color: var(--ysa-light);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    margin: 4px 0 8px;
+    font-weight: 600;
+  }
+
+  /* 3階層イラスト */
+  .layer-diagram {
+    background: white;
+    border: 2px solid var(--ysa);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .layer-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ysa);
+    margin-bottom: 4px;
+  }
+  .layer-sub {
+    font-size: 11px;
+    color: var(--sub);
+    margin-bottom: 16px;
+  }
+  .layer-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 14px;
+    background: var(--ysa-soft);
+    border-radius: 6px;
+    border-left: 4px solid var(--ysa);
+  }
+  .layer-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--ysa);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .layer-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ysa);
+    min-width: 100px;
+  }
+  .layer-desc {
+    font-size: 12px;
+    color: var(--sub);
+    flex: 1;
+  }
+  .layer-arrow {
+    text-align: center;
+    color: var(--muted);
+    font-size: 14px;
+    margin: 4px 0;
+    padding-left: 12px;
+  }
+  .layer-analogy {
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: var(--accent-bg);
+    border-radius: 4px;
+    font-size: 11px;
+    color: var(--sub);
+    line-height: 1.6;
+  }
+  .layer-analogy strong { color: var(--quod); }
+
+  /* Phase */
+  .phase {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 14px;
+    background: white;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+  .phase.current {
+    border-color: var(--warning);
+    box-shadow: 0 2px 8px rgba(184, 134, 11, 0.15);
+  }
+  .phase.completed {
+    background: var(--bg-soft);
+    border-style: dashed;
+  }
+  .phase-header {
+    display: flex;
+    align-items: center;
+    padding: 16px 20px;
+    cursor: pointer;
+    gap: 16px;
+    user-select: none;
+    transition: background 0.15s;
+  }
+  .phase-header:hover { background: var(--bg-soft); }
+  .phase-num-badge {
+    background: var(--ysa);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    flex-shrink: 0;
+  }
+  .phase.current .phase-num-badge { background: var(--warning); }
+  .phase.completed .phase-num-badge { background: var(--success); }
+  .phase-title-block { flex: 1; min-width: 0; }
+  .phase-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0 0 4px;
+    line-height: 1.3;
+  }
+  .phase-summary {
+    color: var(--sub);
+    font-size: 12px;
+    margin: 0;
+    line-height: 1.4;
+  }
+  .phase-progress-block {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+  .phase-percent {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ysa);
+    min-width: 48px;
+    text-align: right;
+  }
+  .phase-percent.done { color: var(--success); }
+  .phase-percent.progress { color: var(--warning); }
+  .phase-mini-bar {
+    width: 80px;
+    height: 6px;
+    background: #f0f0f0;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .phase-mini-fill {
+    height: 100%;
+    background: var(--ysa);
+    transition: width 0.4s ease;
+  }
+  .phase.current .phase-mini-fill { background: var(--warning); }
+  .phase.completed .phase-mini-fill { background: var(--success); }
+  .expand-icon {
+    color: var(--muted);
+    font-size: 12px;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+  .phase.expanded .expand-icon { transform: rotate(90deg); }
+  .phase-body {
+    padding: 0 20px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.4s ease;
+  }
+  .phase.expanded .phase-body {
+    padding: 16px 20px 24px;
+    max-height: 8000px;
+    border-top: 1px solid var(--border);
+  }
+
+  .tasks { display: flex; flex-direction: column; gap: 6px; }
+  .task {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 12px;
+    background: var(--bg-soft);
+    border-radius: 5px;
+    border: 1px solid transparent;
+    transition: all 0.15s;
+  }
+  .task.status-progress { background: var(--warning-bg); border-color: #ead9a3; }
+  .task.status-done { background: var(--success-bg); border-color: #b8dcc4; opacity: 0.75; }
+  .task-content {
+    flex: 1;
+    font-size: 13px;
+    line-height: 1.55;
+  }
+  .task-content .term-hint {
+    color: var(--sub);
+    font-size: 11px;
+    font-weight: 400;
+  }
+  .task-content .entry-url {
+    display: block;
+    margin-top: 6px;
+    padding: 5px 10px;
+    background: white;
+    border: 1px solid var(--info-border);
+    border-left: 3px solid var(--ysa);
+    border-radius: 3px;
+    font-size: 11px;
+    color: var(--sub);
+    line-height: 1.5;
+  }
+  .task-content .entry-url .entry-label {
+    display: inline-block;
+    background: var(--ysa);
+    color: white;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 2px;
+    margin-right: 6px;
+    letter-spacing: 0.05em;
+    vertical-align: middle;
+  }
+  .task-content .entry-url code {
+    background: var(--ysa-soft);
+    color: var(--ysa);
+    padding: 1px 5px;
+    border-radius: 2px;
+    font-family: 'SF Mono', 'Menlo', 'Consolas', monospace;
+    font-size: 10.5px;
+    font-weight: 600;
+  }
+  .task.status-done .task-content {
+    text-decoration: line-through;
+    color: var(--sub);
+  }
+  .task-content .route-label {
+    display: inline-block;
+    background: var(--ysa-soft);
+    color: var(--ysa);
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    margin-right: 6px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+  .task-content .placeholder {
+    background: #fff4d6;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-size: 11px;
+    color: #7a5c1a;
+    font-weight: 600;
+    border: 1px dashed #d4a83a;
+    margin: 0 2px;
+  }
+  .task.sub {
+    margin-left: 32px;
+    background: white;
+    border: 1px solid var(--border);
+  }
+
+  .status-btn {
+    border: none;
+    background: white;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    min-width: 66px;
+    text-align: center;
+    transition: all 0.15s;
+    flex-shrink: 0;
+    font-family: inherit;
+  }
+  .status-btn.status-todo { background: var(--neutral-bg); color: var(--neutral); border: 1px solid #cccccc; }
+  .status-btn.status-progress { background: white; color: var(--warning); border: 1px solid #ead9a3; }
+  .status-btn.status-done { background: white; color: var(--success); border: 1px solid #b8dcc4; }
+  .status-btn:hover { filter: brightness(1.05); transform: scale(1.03); }
+
+  .why {
+    background: var(--accent-bg);
+    padding: 10px 14px;
+    border-radius: 4px;
+    margin-top: 16px;
+    font-size: 12px;
+    color: var(--sub);
+    line-height: 1.7;
+  }
+  .why-label {
+    display: inline-block;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--quod);
+    font-weight: 600;
+    margin-right: 8px;
+  }
+
+  .risk {
+    border-left: 3px solid var(--danger);
+    padding: 10px 14px;
+    margin-top: 12px;
+    background: #fdf7f4;
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--text);
+  }
+  .risk-label {
+    display: inline-block;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--danger);
+    font-weight: 700;
+    margin-right: 8px;
+  }
+
+  .kv-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .kv {
+    background: white;
+    padding: 10px 12px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+  }
+  .kv .k {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    margin-bottom: 3px;
+  }
+  .kv .v {
+    font-size: 12px;
+    color: var(--text);
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .sub-section-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ysa);
+    margin: 20px 0 8px;
+    padding-left: 10px;
+    border-left: 3px solid var(--quod);
+  }
+  .sub-section-title:first-child { margin-top: 0; }
+  .task-note {
+    font-size: 11px;
+    color: var(--muted);
+    margin: 4px 0 8px;
+  }
+
+  .agenda { background: white; border: 1px solid var(--border); border-radius: 6px; padding: 4px 20px; }
+  .agenda-row {
+    display: flex;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f0f0;
+    align-items: baseline;
+    gap: 16px;
+  }
+  .agenda-row:last-child { border-bottom: none; }
+  .agenda-time {
+    font-size: 12px;
+    color: var(--quod);
+    font-weight: 600;
+    width: 50px;
+    flex-shrink: 0;
+    text-align: right;
+  }
+  .agenda-title { font-size: 13px; color: var(--text); flex: 1; }
+  .agenda-title .sub { display: block; color: var(--sub); font-size: 11px; margin-top: 2px; }
+
+  .post-launch {
+    background: var(--bg-soft);
+    padding: 16px 20px;
+    border-radius: 6px;
+    border: 1px dashed var(--border-strong);
+    font-size: 12px;
+    line-height: 1.7;
+  }
+  .post-launch ul { margin: 8px 0 0; padding-left: 20px; }
+  .post-launch li { margin-bottom: 4px; }
+
+  /* 用語辞書 */
+  .glossary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .term {
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--quod);
+    border-radius: 4px;
+    padding: 10px 14px;
+  }
+  .term-name {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ysa);
+    margin-bottom: 4px;
+  }
+  .term-def {
+    font-size: 11px;
+    color: var(--sub);
+    line-height: 1.6;
+  }
+
+  footer.doc-footer {
+    margin-top: 56px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  .reset-block { text-align: right; margin-top: 24px; font-size: 11px; }
+  .reset-btn {
+    background: transparent;
+    border: 1px solid var(--border-strong);
+    color: var(--sub);
+    padding: 4px 12px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 11px;
+    font-family: inherit;
+  }
+  .reset-btn:hover { background: var(--bg-soft); color: var(--danger); border-color: var(--danger); }
+
+  @media print {
+    body { background: white; }
+    .page { max-width: none; padding: 20mm; }
+    .phase-body { max-height: none !important; padding: 16px 20px 24px !important; }
+    .status-btn, .reset-btn, .expand-icon { display: none; }
+    .phase-header { cursor: default; }
+    section { page-break-inside: avoid; }
+  }
+
+  @media (max-width: 640px) {
+    .page { padding: 20px 16px 60px; }
+    .phase-header { flex-wrap: wrap; }
+    .phase-mini-bar { display: none; }
+    .dash-percent { font-size: 32px; }
+    .glossary-grid { grid-template-columns: 1fr; }
+    .cast-items { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="doc-header">
+  <div class="eyebrow">META 広告 ロードマップ</div>
+  <h1>配信開始までの道筋とやること</h1>
+  <p class="doc-sub">YSA スポーツと医科学のジム 横浜関内｜Instagram ストーリーズ広告｜作成 2026-09-01（クオド）</p>
+</header>
+
+<div class="dashboard">
+  <div class="dash-row-top">
+    <div>
+      <div class="dash-label">全体進捗</div>
+      <div class="dash-percent"><span id="overallPercent">0</span><span class="unit">%</span><span class="sub-count" id="overallCount">0 / 0 タスク完了</span></div>
+    </div>
+    <div style="flex: 1; min-width: 200px;">
+      <div class="dash-label">配信開始の目安</div>
+      <div style="font-size: 18px; font-weight: 700; color: var(--ysa); margin-top: 4px;">9月 第2週（9/8〜9/12）に配信開始</div>
+      <div style="font-size: 11px; color: var(--sub); margin-top: 4px;">既存BM確認＋ピクセル埋め込みが今週中に完了する前提</div>
+    </div>
+  </div>
+  <div class="progress-bar">
+    <div class="progress-fill" id="overallBar" style="width: 0%;"></div>
+  </div>
+
+  <div class="focus-box">
+    <div class="focus-title">今日のフォーカス（2026-09-01 月）</div>
+    <ul class="focus-items">
+      <li><strong>本日 14:00〜 クオド × YSA MTG</strong>（Phase 3 の実操作を一緒に進める）</li>
+      <li><strong>Phase 1 の未完了タスクを完了させる</strong>：既存BM確認結果を持ち寄って、Phase 1 の残タスクをMTG中に整理する</li>
+      <li><strong>ピクセルの埋め込みをWeb担当に早めに依頼</strong>：対応日数が読めないので、着手を待たせないため</li>
+    </ul>
+  </div>
+
+  <div class="role-note">
+    <strong>この案件の分担：</strong>アカウント所有権はYSA法人に残す設計のため、<strong>広告アカウントの作成・支払い・審査提出はすべてYSA主体</strong>で進めます。クオドは設計指示・伴走・週次レビューを担当します。将来クオドとの契約が変わっても、広告資産はそのままYSA側に残ります。
+  </div>
+</div>
+
+<!-- Section 1: ロードマップ -->
+<section id="roadmap">
+  <h2><span class="num">1</span>配信開始までのロードマップ</h2>
+  <p class="lead">大きく5フェーズ。各Phaseをクリックで開閉、タスクのステータスボタン（未着手 → 進行中 → 完了）をクリックすると進捗率が自動更新されます。状態はブラウザに保存されます。用語が分からないときは <a href="#glossary" style="color:var(--quod);">末尾の「用語ミニ辞書」</a>を参照ください。</p>
+
+  <!-- Phase 1 -->
+  <div class="phase" data-phase="1">
+    <div class="phase-header" onclick="togglePhase(this)">
+      <div class="phase-num-badge">PHASE 1</div>
+      <div class="phase-title-block">
+        <div class="phase-title">事前準備 — 広告を配信する「土台」を作る</div>
+        <div class="phase-summary">BM／Facebookページ／Instagram連携／広告アカウント／支払い／ピクセル｜担当：YSA主体</div>
+      </div>
+      <div class="phase-progress-block">
+        <div class="phase-mini-bar"><div class="phase-mini-fill" style="width:0%;"></div></div>
+        <div class="phase-percent">0%</div>
+      </div>
+      <div class="expand-icon">▶</div>
+    </div>
+    <div class="phase-body">
+
+      <!-- 登場人物図解 -->
+      <div class="cast-diagram">
+        <div class="cast-title">Meta広告の「登場人物」の関係</div>
+        <div class="cast-sub">Phase 1 で揃えるものはこれ。まずFacebook個人アカウントを起点に、その上に法人管理層としてBM（別名：ビジネスアカウント／Business Portfolio）を作り、その中にFBページ／IG／広告アカウントを入れて、外にはWebサイトへピクセルを埋め込みます。</div>
+
+        <div class="cast-personal">
+          <div class="cast-personal-icon">個</div>
+          <div>
+            <div class="cast-personal-name">Facebook 個人アカウント（BMの管理者）</div>
+            <div class="cast-personal-desc">YSAスタッフの個人FBアカウント。BMは必ず「個人アカウントが管理者になる」構造。Facebookに"ビジネスアカウント"という種別は存在しないため、必ず個人が起点</div>
+          </div>
+        </div>
+        <div class="cast-down-arrow">↓ 管理者として</div>
+
+        <div class="cast-bm">
+          <div class="cast-bm-label">Meta ビジネスマネージャー（BM）＝ ビジネスアカウント／Business Portfolio</div>
+          <div class="cast-bm-note">Metaが提供する法人管理層。<strong>ビジネス名を「公益財団法人横浜市スポーツ協会」で登録</strong>することで、実質的な「法人運用」になります（"ビジネスアカウント"はMeta側の管理層の呼び名で、Facebookのアカウント種別ではない点に注意）。</div>
+          <div class="cast-items">
+            <div class="cast-item">
+              <div class="cast-icon fb">FB</div>
+              <div>
+                <div class="cast-name">Facebookページ（ジム用）</div>
+                <div class="cast-desc">YSA全体ページとは別に新規作成</div>
+              </div>
+            </div>
+            <div class="cast-item">
+              <div class="cast-icon ig">IG</div>
+              <div>
+                <div class="cast-name">Instagram（プロアカウント）</div>
+                <div class="cast-desc">プロ化済み、FBページと連携</div>
+              </div>
+            </div>
+            <div class="cast-item full">
+              <div class="cast-icon money">＄</div>
+              <div>
+                <div class="cast-name">広告アカウント</div>
+                <div class="cast-desc">＋ YSAクレジットカードで支払い設定 ＋ 通知メール（ysa-gym@yspc.or.jp）</div>
+              </div>
+            </div>
+          </div>
+          <div class="cast-pixel-row">
+            <div class="cast-pixel-arrow">↕ Webサイトの動きを広告側に伝える</div>
+            <div class="cast-pixel">
+              <div class="cast-icon" style="background: var(--danger);">計測</div>
+              <div>
+                <div class="cast-name">Metaピクセル</div>
+                <div class="cast-desc">Webサイト（ysa-gym.yokohama）に貼る計測タグ。「広告を見た人がサイトを訪れたか／予約したか」を計測</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tasks">
+        <div class="task"><div class="task-content">Instagram プロアカウント化 <span class="term-hint">（個人利用ではなく、分析機能つきのビジネス用アカウントに切替）</span></div><button class="status-btn status-done" onclick="cycleStatus(this)">完了</button></div>
+        <div class="task"><div class="task-content">Instagram ログイン情報の受領</div><button class="status-btn status-done" onclick="cycleStatus(this)">完了</button></div>
+        <div class="task"><div class="task-content">既存 Facebookページ の有無確認（YSA全体は存在、ジム専用なし）</div><button class="status-btn status-done" onclick="cycleStatus(this)">完了</button></div>
+        <div class="task"><div class="task-content">共有メール ysa-gym@yspc.or.jp を BM登録・通知受信用に使う合意</div><button class="status-btn status-done" onclick="cycleStatus(this)">完了</button></div>
+        <div class="task"><div class="task-content"><strong>既存 BM（ビジネスマネージャー）の有無を確認</strong> <span class="term-hint">（YSA広報部門に照会中）</span><span class="entry-url"><span class="entry-label">入口</span>広報部門に「Meta ビジネスマネージャー／Meta Business Account を過去に作成したことがあるか」を照会。並行して <code>business.facebook.com</code> にYSAスタッフの個人FBアカウントでログインし、「ビジネス設定」に登録済みビジネスが出るか確認</span></div><button class="status-btn status-progress" onclick="cycleStatus(this)">進行中</button></div>
+        <div class="task sub"><div class="task-content"><span class="route-label">既存BM あり</span>既存BM にジム用の広告アカウントを追加（最短ルート、+0日）<span class="entry-url"><span class="entry-label">入口</span><code>business.facebook.com</code> → 既存BM選択 → 「ビジネス設定」→「アカウント」→「広告アカウント」→「追加」→「新しい広告アカウントを作成」</span></div><button class="status-btn status-todo" onclick="cycleStatus(this)">未着手</button></div>
+        <div class="task sub"><div class="task-content"><span class="route-label">既存BM なし</span>BMを新規作成（ビジネス名＝「公益財団法人横浜市スポーツ協会」）→ Meta側の商号確認で +3〜5営業日<span class="entry-url"><span class="entry-label">入口</span><code>business.facebook.com/create</code> →「アカウントを作成」→ ビジネス名／氏名／仕事用メールアドレスを入力</span></div><button class="status-btn status-todo" onclick="cycleStatus(this)">未着手</button></div>
+        <div class="task"><div class="task-content">Facebookページ（ジム用）を新規作成 <span class="term-hint">（個人アカウントとは別の「会社・団体用ページ」）</span><span class="entry-url"><span class="entry-label">入口</span><code>facebook.com/pages/create</code>（個人アカウントログイン状態から）／またはBM経由なら「ビジネス設定」→「アカウント」→「ページ」→「追加」→「新しいページを作成」</span></div><button class="status-btn status-todo" onclick="cycleStatus(this)">未着手</button></div>
+        <div class="task"><div class="task-content">Instagram（プロアカウント化済）と Facebookページ の連携<span class="entry-url"><span class="entry-label">入口</span>BM「ビジネス設定」→「アカウント」→「Instagramアカウント」→「追加」で ysa_gym.yokohama をログイン連携／またはFacebookページ側「設定」→「Instagram」から接続</span></div><button class="status-btn status-todo" onclick="cycleStatus(this)">未着手</button></div>
+        <div class="task"><div class="task-content">広告アカウントの作成（BM内にジム用の広告アカウントを1つ）<span class="entry-url"><span class="entry-label">入口</span>BM「ビジネス設定」→「アカウント」→「広告アカウント」→「追加」→「新しい広告アカウントを作成」（アカウント名：YSA_gym_ads、通貨：JPY、タイムゾーン：東京）</span></div><button class="status-btn status-todo" onclick="cycleStatus(this)">未着手</button></div>
+        <div class="task"><div class="task-content">支払い方法の登録（<span class="placeholder">使用するYSAクレカ名を記入</span> を広告アカウントにセット）<span class="entry-url"><span class="entry-label">入口</span><code>adsmanager.facebook.com</code> → 左上メニュー「すべてのツール」→「請求と支払い」→「支払い方法」→「支払い方法を追加」でクレジットカード情報を入力</span></div><button class="status-btn status-todo" onclick="cycleStatus(this)">未着手</button></div>
+        <div class="task"><div class="task-content">通知・請求メールの登録（ysa-gym@yspc.or.jp を通知先に設定）<span class="entry-url"><span class="entry-label">入口</span>BM「ビジネス設定」→ 該当広告アカウント選択 →「通知」で受信メールに ysa-gym@yspc.or.jp を追加</span></div><button class="status-btn status-todo" onclick="cycleStatus(this)">未着手</button></div>
+        <div class="task"><div class="task-content"><strong>Metaピクセルの埋め込み依頼</strong>（<span class="placeholder">Web担当（HP保守会社／担当者名を記入）</span> にタグ発行コードを送付し、全ページ共通で埋め込み依頼）<span class="entry-url"><span class="entry-label">入口</span><code>business.facebook.com/events_manager</code> →「データソースを接続」→「ウェブ」→「Metaピクセル」→ 名前を入力（例：ysa_gym_pixel）→ 発行されたタグコード（数十行のHTML）をコピーしてWeb担当にメール送付</span></div><button class="status-btn status-todo" onclick="cycleStatus(this)">未着手</button></div>
+      </div>
+      <div class="task-note" style="margin-top: 12px; padding: 8px 12px; background: var(--info-bg); border-radius: 4px; color: var(--sub);">※各「入口」に記載のURLと画面遷移は 2026-09 時点の目安。Meta側のUI変更でメニュー名が変わる可能性があります。迷ったら Meta 公式ヘルプまたはクオドまでご連絡ください。</div>
+
+      <div class="why">
+        <span class="why-label">なぜ</span>BM（ビジネスマネージャー）は広告運用の「土台」。ここに広告アカウント／Facebookページ／Instagram／ピクセル／支払い手段がすべて紐付きます。「Facebookに"法人アカウント"」というものは存在せず、BMに「ビジネス名として法人名を登録する」ことで実質的な法人運用になります。ピクセルはWebサイトに貼る計測タグで、別作業ながら広告側との紐付けが必須です。
+      </div>
+
+      <div class="risk">
+        <span class="risk-label">詰まりポイント</span>既存BMの確認が遅れる場合：今週前半に回答がなければ「新規作成ルートで並行して進める」判断が必要です（後で既存BMが見つかっても作成済みのデータの引き継ぎは可能）。ピクセルはWeb担当（HP保守会社）の対応日数が読めないので、早めに依頼を出していただけると安心です。
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 2 -->
+  <div class="phase" data-phase="2">
+    <div class="phase-header" onclick="togglePhase(this)">
+      <div class="phase-num-badge">PHASE 2</div>
+      <div class="phase-title-block">
+        <div class="phase-title">配信設計の合意 — 何を・誰に・いくらで出すか</div>
+        <div class="phase-summary">8/25 MTGで全項目合意済｜担当：共同</div>
+      </div>
+      <div class="phase-progress-block">
+        <div class="phase-mini-bar"><div class="phase-mini-fill" style="width:0%;"></div></div>
+        <div class="phase-percent">0%</div>
+      </div>
+      <div class="expand-icon">▶</div>
+    </div>
+    <div class="phase-body">
+      <div class="tasks">
+        <div class="task"><div class="task-content">年内総予算の合意（Meta実費 50万円／9/1〜12/31）</div><button class="status-btn status-done" onclick="cycleStatus(this)">完了</button></div>
+        <div class="task"><div class="task-content">3フェーズ構成の合意（9月 ABテスト 10万／10-11月 本格運用 25万／12月 年末シーズン 15万）</div><button class="status-btn status-done" onclick="cycleStatus(this)">完了</button></div>
+        <div class="task"><div class="task-content">ターゲット層の合意（30-55歳、医療・パーソナル・スポーツ関心層）</div><button class="status-btn status-done" onclick="cycleStatus(this)">完了</button></div>
+        <div class="task"><div class="task-content">配信エリア戦略の合意（コア：ポスティング配布エリア／拡張：中区＋西区＋南区北部）</div><button class="status-btn status-done" onclick="cycleStatus(this)">完了</button></div>
+        <div class="task"><div class="task-content">配信面の合意（9月：IGストーリーズのみ／10-11月：ストーリーズ＋リール）</div><button class="status-btn status-done" onclick="cycleStatus(this)">完了</button></div>
+        <div class="task"><div class="task-content">訴求ABテスト（2案の比較）の合意：A：機能訴求 ／ B：ペルソナ直撃訴求</div><button class="status-btn status-done" onclick="cycleStatus(this)">完了</button></div>
+      </div>
+      <div class="why">
+        <span class="why-label">なぜこの設計</span>9月は「どの伝え方（訴求）が効くか」を見定めるテスト期なので、予算を抑えて変数を少なくします。勝ちパターンが見えた10月以降に予算を集中投下するのが、いちばんリターンが高い設計です。詳細は『20260825_MTG準備_Meta広告初期設定.md』参照。
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 3 -->
+  <div class="phase" data-phase="3">
+    <div class="phase-header" onclick="togglePhase(this)">
+      <div class="phase-num-badge">PHASE 3</div>
+      <div class="phase-title-block">
+        <div class="phase-title">広告作成 — Ads Managerで「3階層」を組む</div>
+        <div class="phase-summary">キャンペーン → 広告セット → 広告 を作成｜担当：共同（本日14時 MTG）</div>
+      </div>
+      <div class="phase-progress-block">
+        <div class="phase-mini-bar"><div class="phase-mini-fill" style="width:0%;"></div></div>
+        <div class="phase-percent">0%</div>
+      </div>
+      <div class="expand-icon">▶</div>
+    </div>
+    <div class="phase-body">
+
+      <!-- 3階層イラスト -->
+      <div class="layer-diagram">
+        <div class="layer-title">Ads Managerの「3階層」の関係</div>
+        <div class="layer-sub">上から順に「目的 → 誰に届けるか → 実際の広告物」を設定します。ポスティングチラシで例えると、1階層目が「なんのために配るか」、2階層目が「どこに何部配るか」、3階層目が「実際のチラシそのもの」です。</div>
+        <div class="layer-row">
+          <div class="layer-num">1</div>
+          <div class="layer-name">キャンペーン</div>
+          <div class="layer-desc">配信の目的を1つ設定：「見学予約獲得」</div>
+        </div>
+        <div class="layer-arrow">↓</div>
+        <div class="layer-row">
+          <div class="layer-num">2</div>
+          <div class="layer-name">広告セット</div>
+          <div class="layer-desc">誰に／どこに／いくら／いつ配るかを設定</div>
+        </div>
+        <div class="layer-arrow">↓</div>
+        <div class="layer-row">
+          <div class="layer-num">3</div>
+          <div class="layer-name">広告 × 2案</div>
+          <div class="layer-desc">実際にInstagramで表示される画像＋文言（A案・B案）</div>
+        </div>
+        <div class="layer-analogy">
+          <strong>ポスティング比喩：</strong>①「なんのためにチラシを配るか＝見学予約を取るため」／②「山下町に3,000部、元町に370部を8月上旬に配布」／③「実際のチラシデザインA案・B案」――このセットで、Meta広告の3階層と同じ構造です。
+        </div>
+      </div>
+
+      <div class="sub-section-title">① キャンペーンを作る（1階層目：目的の定義）</div>
+      <div class="tasks">
+        <div class="task"><div class="task-content">目的：「見学予約獲得（リード＝見込み客の獲得）」を1つだけ設定</div><button class="status-btn status-todo" onclick="cycleStatus(this)">未着手</button></div>
+        <div class="task"><div class="task-content">キャンペーン名：YSA_2026年内_見学予約獲得</div><button class="status-btn status-todo" onclick="cycleStatus(this)">未着手</button></div>
+      </div>
+      <div class="why"><span class="why-label">なぜ</span>ここで「Meta AI に何を成果として配信させるか」を定義します。ここを間違えると以降のすべての最適化がズレる、いちばん重要な設定。</div>
+
+      <div class="sub-section-title">② 広告セットを作る（2階層目：誰に／どこに／いくら／いつ）</div>
+      <p class="task-note">Ads Manager 上で以下の項目を設定します。内容は 8/25 MTG合意済み。</p>
+      <div class="tasks">
+        <div class="task"><div class="task-content">地域：中区南部（ポスティング配布エリア）のコアセット1本</div><button class="status-btn status-todo" onclick="cycleStatus(this)">未着手</button></div>
+        <div class="task"><div class="task-content">年齢：30〜55歳、性別：すべて</div><button class="status-btn status-todo" onclick="cycleStatus(this)">未着手</button></div>
+        <div class="task"><div class="task-content">詳細ターゲティング（興味関心）：ヘルスケア／予防医療／スポーツ医学／パーソナルトレーニング／ゴルフ／ランニング 等 10〜12項目</div><button class="status-btn status-todo" onclick="cycleStatus(this)">未着手</button></div>
+        <div class="task"><div class="task-content">予算：日3,300円（30日で10万円）／期間：9/1〜9/30（ABテスト期）</div><button class="status-btn status-todo" onclick="cycleStatus(this)">未着手</button></div>
+        <div class="task"><div class="task-content">配信面：Instagram ストーリーズのみ（手動選択）</div><button class="status-btn status-todo" onclick="cycleStatus(this)">未着手</button></div>
+        <div class="task"><div class="task-content">最適化イベント：LP到達 <span class="term-hint">（LP＝ランディングページ＝広告クリック後の着地ページ）</span></div><button class="status-btn status-todo" onclick="cycleStatus(this)">未着手</button></div>
+      </div>
+      <div class="why"><span class="why-label">なぜ LP到達</span>予算規模上、「予約完了」を直接の最適化イベント（AIが目標に据える行動）にすると、Meta AIの学習に必要な件数が集まりません（サンプル不足）。予約完了の直前の行動である LP到達 を最適化に使い、予約完了は別で数字を見る役割にします。</div>
+
+      <div class="sub-section-title">③ 広告を作る（3階層目：実際に表示されるクリエイティブ）</div>
+      <div class="tasks">
+        <div class="task"><div class="task-content">訴求A（機能訴求）：医療施設併設／専門トレーナー／低酸素・高酸素・AI機器</div><button class="status-btn status-todo" onclick="cycleStatus(this)">未着手</button></div>
+        <div class="task"><div class="task-content">訴求B（ペルソナ直撃訴求）：「続けることが、いちばんの投資。」</div><button class="status-btn status-todo" onclick="cycleStatus(this)">未着手</button></div>
+        <div class="task"><div class="task-content">各広告に画像（1080×1920 縦9:16）＋主要テキスト＋CTA「予約する」ボタン＋LP URL（UTMパラメータ付き）を設定 <span class="term-hint">（CTA＝行動を促すボタン／UTM＝広告経由の流入を計測するURLパラメータ）</span></div><button class="status-btn status-todo" onclick="cycleStatus(this)">未着手</button></div>
+      </div>
+      <div class="why"><span class="why-label">なぜ2案</span>9月は「どちらの訴求がターゲットに刺さるか」を判定するABテスト期なので、同じ広告セット内に2案を並行配信して、お互いのクリック率・LP到達率を見比べます。</div>
+
+      <div class="kv-grid">
+        <div class="kv"><div class="k">担当</div><div class="v">クオド設計＋YSA画面操作<br>（MTG中）</div></div>
+        <div class="kv"><div class="k">所要</div><div class="v">MTG内で30〜60分</div></div>
+        <div class="kv"><div class="k">前提</div><div class="v">Phase 1完了＋ピクセル埋め込み済み</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 4 -->
+  <div class="phase" data-phase="4">
+    <div class="phase-header" onclick="togglePhase(this)">
+      <div class="phase-num-badge">PHASE 4</div>
+      <div class="phase-title-block">
+        <div class="phase-title">Meta審査 — 広告データ提出後の自動チェック</div>
+        <div class="phase-summary">通常 24時間以内 / 最大 3日｜担当：Meta自動</div>
+      </div>
+      <div class="phase-progress-block">
+        <div class="phase-mini-bar"><div class="phase-mini-fill" style="width:0%;"></div></div>
+        <div class="phase-percent">0%</div>
+      </div>
+      <div class="expand-icon">▶</div>
+    </div>
+    <div class="phase-body">
+      <div class="tasks">
+        <div class="task"><div class="task-content">広告データの提出（入稿）完了 → Meta審査待ち（通常24時間以内、最大3日）</div><button class="status-btn status-todo" onclick="cycleStatus(this)">未着手</button></div>
+        <div class="task"><div class="task-content">審査通過確認（Ads Manager 上でステータスを確認）</div><button class="status-btn status-todo" onclick="cycleStatus(this)">未着手</button></div>
+      </div>
+      <div class="risk"><span class="risk-label">審査却下時</span>医療・ヘルス領域は審査が厳しめです。却下の場合は文言を微調整して再審査。「特別カテゴリ広告」（クレジット／雇用／住宅／政治広告用の特別枠）の指定を求められた場合は「該当なし」で進めるのが基本です。</div>
+    </div>
+  </div>
+
+  <!-- Phase 5 -->
+  <div class="phase" data-phase="5">
+    <div class="phase-header" onclick="togglePhase(this)">
+      <div class="phase-num-badge">PHASE 5</div>
+      <div class="phase-title-block">
+        <div class="phase-title">配信開始 — 最初の2・3日は「学習期間」</div>
+        <div class="phase-summary">審査通過後に自動配信 / 週次レビュー体制へ｜担当：クオド伴走</div>
+      </div>
+      <div class="phase-progress-block">
+        <div class="phase-mini-bar"><div class="phase-mini-fill" style="width:0%;"></div></div>
+        <div class="phase-percent">0%</div>
+      </div>
+      <div class="expand-icon">▶</div>
+    </div>
+    <div class="phase-body">
+      <div class="tasks">
+        <div class="task"><div class="task-content">審査通過 → 配信自動開始</div><button class="status-btn status-todo" onclick="cycleStatus(this)">未着手</button></div>
+        <div class="task"><div class="task-content">開始直後48〜72時間：学習期間としてKPI（指標）は見ない（データ蓄積期間）</div><button class="status-btn status-todo" onclick="cycleStatus(this)">未着手</button></div>
+        <div class="task"><div class="task-content">学習抜け後（目安1〜2週）：週次レビューで CPA（1件獲得あたりコスト）・クリック率・LP到達率 を確認</div><button class="status-btn status-todo" onclick="cycleStatus(this)">未着手</button></div>
+        <div class="task"><div class="task-content">9月末：ABテスト勝者判定 → 10月本格運用体制に切替</div><button class="status-btn status-todo" onclick="cycleStatus(this)">未着手</button></div>
+      </div>
+      <div class="why"><span class="why-label">なぜ学習期間を待つのか</span>Meta AI は最初は広めに配信して、反応を見ながら「この広告に反応しそうな人はこういう属性」を学習します。早めに手を入れすぎるとこの学習がリセットされてしまうので、最初の数日はぐっと見守るのがセオリー。</div>
+    </div>
+  </div>
+
+  <div class="reset-block">
+    <button class="reset-btn" onclick="resetAll()">全ステータスをリセット</button>
+  </div>
+</section>
+
+<!-- Section 2: MTG Agenda -->
+<section id="agenda">
+  <h2><span class="num">2</span>本日 14時 MTG アジェンダ（60分）</h2>
+  <div class="agenda">
+    <div class="agenda-row">
+      <div class="agenda-time">10分</div>
+      <div class="agenda-title">本資料の通し確認<span class="sub">全体像を揃える／Phase 1 の残タスクと Phase 3 の進め方を先に共有</span></div>
+    </div>
+    <div class="agenda-row">
+      <div class="agenda-time">10分</div>
+      <div class="agenda-title">既存BM確認結果の共有<span class="sub">YSA広報部門の確認結果 → あり／なしで Phase 1 のルート確定</span></div>
+    </div>
+    <div class="agenda-row">
+      <div class="agenda-time">30分</div>
+      <div class="agenda-title">Phase 3 の実操作 — キャンペーン／広告セット作成<span class="sub">Ads Manager を画面共有しながら一緒に進める</span></div>
+    </div>
+    <div class="agenda-row">
+      <div class="agenda-time">10分</div>
+      <div class="agenda-title">宿題整理 — Phase 1 の残タスクとスケジュール<span class="sub">ピクセル対応、支払い登録、次回進捗確認日程</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- Section 3: Post-launch -->
+<section id="post">
+  <h2><span class="num">3</span>配信開始後の運用（概要）</h2>
+  <div class="post-launch">
+    配信開始後は週次サイクルで以下を回します。詳細な運用マニュアルは配信開始後に別途ご共有します。
+    <ul>
+      <li>週次1回レビュー：CPA・クリック率・LP到達率 を確認、クリエイティブの反応が落ちてきたら差し替え判定</li>
+      <li>9月末：ABテスト勝者判定 → 10-11月の本格運用体制に切替（エリア拡張＋Instagramリールへの配信面追加）</li>
+      <li>12月：年末年始訴求にクリエイティブ差し替え（年末商戦タイミングで入会拡大）</li>
+      <li>10月以降：施設紹介動画のリール広告投入（撮影は9/17仮置き）</li>
+    </ul>
+  </div>
+</section>
+
+<!-- Section 4: Glossary -->
+<section id="glossary">
+  <h2><span class="num">4</span>用語ミニ辞書</h2>
+  <p class="lead">本資料で出てくるMeta広告用語を、素人視点で1行ずつ説明します。分からない言葉が出てきたらここに戻ってきてください。</p>
+  <div class="glossary-grid">
+    <div class="term"><div class="term-name">Facebook 個人アカウント</div><div class="term-def">Facebook唯一のアカウント種別（1人1つ、実名原則）。BMは必ずここが「管理者」になるので、法人運用の起点</div></div>
+    <div class="term"><div class="term-name">Facebookに"ビジネスアカウント"はない</div><div class="term-def">よくある誤解。FBのアカウント種別は個人だけ。世間で「FBビジネスアカウント」と呼ばれるのは実質BM／Business Portfolioを指す口語表現</div></div>
+    <div class="term"><div class="term-name">BM（ビジネスマネージャー）＝ ビジネスアカウント／Business Portfolio</div><div class="term-def">Metaが提供する法人管理層。FBページ・IG・広告アカウント・ピクセルが全部ここに紐付く。呼称違いは全て同じもの</div></div>
+    <div class="term"><div class="term-name">Facebookページ</div><div class="term-def">個人アカウントとは別の「会社・団体用の公開ページ」（アカウントではなく"ページ"）。広告を出すには必須</div></div>
+    <div class="term"><div class="term-name">Instagram プロアカウント</div><div class="term-def">個人利用ではなく、分析機能つきのビジネス／クリエイター用アカウント。プロ化時に「ビジネス」を選ぶとIG上の"ビジネスアカウント"になる（Meta側のBMとは別レイヤー）</div></div>
+    <div class="term"><div class="term-name">Meta Business Suite</div><div class="term-def">FB・IGの投稿・メッセージ・広告を日常運用するアプリ／画面。BMの中身を日々触るための実務ツール</div></div>
+    <div class="term"><div class="term-name">広告アカウント</div><div class="term-def">広告予算・支払い・入稿データを管理する単位。BMの中に作る</div></div>
+    <div class="term"><div class="term-name">Metaピクセル</div><div class="term-def">Webサイトに埋め込む計測タグ。「広告経由でサイトに来た人が予約したか」を計測する</div></div>
+    <div class="term"><div class="term-name">Ads Manager</div><div class="term-def">Metaの広告管理画面。ここで広告を作成・配信・分析する</div></div>
+    <div class="term"><div class="term-name">キャンペーン／広告セット／広告</div><div class="term-def">Ads Manager の3階層。上から「目的」「誰に届けるか」「実際の広告物」を設定する</div></div>
+    <div class="term"><div class="term-name">リード</div><div class="term-def">見込み客のこと。今回は「見学予約をした人」＝リード</div></div>
+    <div class="term"><div class="term-name">LP（ランディングページ）</div><div class="term-def">広告をクリックしたときに着地するWebページ。今回はジムのHP</div></div>
+    <div class="term"><div class="term-name">CTA（Call To Action）</div><div class="term-def">行動を促すボタン。「予約する」「詳細を見る」など</div></div>
+    <div class="term"><div class="term-name">UTM（パラメータ）</div><div class="term-def">URLの末尾につけるタグで、「どの広告経由で来たか」を計測するための印</div></div>
+    <div class="term"><div class="term-name">ABテスト</div><div class="term-def">2案（A・B）を同時に出して、どちらが反応がいいかを比べる試験</div></div>
+    <div class="term"><div class="term-name">クリエイティブ（クリエ）</div><div class="term-def">広告に使う画像や動画、文言などの素材のこと</div></div>
+    <div class="term"><div class="term-name">訴求</div><div class="term-def">広告で伝える「売り」のメッセージ。今回は機能訴求とペルソナ直撃訴求の2種</div></div>
+    <div class="term"><div class="term-name">入稿</div><div class="term-def">広告データ（画像・文言・設定）をMetaに提出すること</div></div>
+    <div class="term"><div class="term-name">審査</div><div class="term-def">入稿後、Metaが規約違反・誤解を招く表現がないか自動チェックすること</div></div>
+    <div class="term"><div class="term-name">学習期間（学習フェーズ）</div><div class="term-def">配信開始直後の48〜72時間。Meta AIが「反応しそうな人の属性」を学ぶ期間</div></div>
+    <div class="term"><div class="term-name">最適化イベント</div><div class="term-def">Meta AIが目標に据える行動。今回は「LP到達」を最適化イベントに設定</div></div>
+    <div class="term"><div class="term-name">CPA（Cost Per Acquisition）</div><div class="term-def">1件獲得するのにかかったコスト。低いほど効率がいい</div></div>
+    <div class="term"><div class="term-name">KPI</div><div class="term-def">重要業績評価指標。今回はCPA・クリック率・LP到達率・予約完了数</div></div>
+    <div class="term"><div class="term-name">クリック率（CTR）</div><div class="term-def">広告を見た人のうち、何%がクリックしたかの割合</div></div>
+    <div class="term"><div class="term-name">クリエイティブ疲弊</div><div class="term-def">同じ広告を長く出し続けて、ターゲットに飽きられ反応が落ちる現象</div></div>
+    <div class="term"><div class="term-name">配信面</div><div class="term-def">広告が表示される場所（IGストーリーズ／IGフィード／IGリール／FBフィード等）</div></div>
+    <div class="term"><div class="term-name">3フェーズ構成</div><div class="term-def">9月ABテスト期／10-11月本格運用期／12月年末シーズナル期の3段階の運用設計</div></div>
+  </div>
+</section>
+
+<footer class="doc-footer">
+  YSA スポーツと医科学のジム 横浜関内　――　作成：クオド（切金）　――　2026-09-01
+</footer>
+
+</div>
+
+<script>
+  const STORAGE_KEY = 'ysa_meta_roadmap_status_v2';
+  const NEXT_STATUS = { 'todo': 'progress', 'progress': 'done', 'done': 'todo' };
+  const LABEL = { 'todo': '未着手', 'progress': '進行中', 'done': '完了' };
+  const WEIGHT = { 'todo': 0, 'progress': 0.5, 'done': 1 };
+
+  function cycleStatus(btn) {
+    event.stopPropagation();
+    const task = btn.closest('.task');
+    const current = ['todo', 'progress', 'done'].find(s => btn.classList.contains('status-' + s));
+    const next = NEXT_STATUS[current];
+    btn.classList.remove('status-' + current);
+    btn.classList.add('status-' + next);
+    btn.textContent = LABEL[next];
+    task.classList.remove('status-' + current, 'status-todo', 'status-progress', 'status-done');
+    task.classList.add('status-' + next);
+    updateAllProgress();
+    saveState();
+  }
+
+  function togglePhase(header) {
+    const phase = header.closest('.phase');
+    phase.classList.toggle('expanded');
+    saveState();
+  }
+
+  function computePhaseProgress(phaseEl) {
+    const tasks = phaseEl.querySelectorAll('.task');
+    if (tasks.length === 0) return { pct: 0, done: 0, total: 0 };
+    let weight = 0, done = 0;
+    tasks.forEach(t => {
+      const status = ['todo', 'progress', 'done'].find(s => t.classList.contains('status-' + s)) || 'todo';
+      weight += WEIGHT[status];
+      if (status === 'done') done++;
+    });
+    return { pct: Math.round((weight / tasks.length) * 100), done: done, total: tasks.length };
+  }
+
+  function updateAllProgress() {
+    let totalWeight = 0, totalCount = 0, totalDone = 0;
+    document.querySelectorAll('.phase').forEach(phase => {
+      const { pct } = computePhaseProgress(phase);
+      const pctEl = phase.querySelector('.phase-percent');
+      const fillEl = phase.querySelector('.phase-mini-fill');
+      pctEl.textContent = pct + '%';
+      fillEl.style.width = pct + '%';
+      phase.classList.remove('current', 'completed');
+      pctEl.classList.remove('done', 'progress');
+      if (pct === 100) {
+        phase.classList.add('completed');
+        pctEl.classList.add('done');
+      } else if (pct > 0) {
+        phase.classList.add('current');
+        pctEl.classList.add('progress');
+      }
+      const tasks = phase.querySelectorAll('.task');
+      tasks.forEach(t => {
+        const status = ['todo', 'progress', 'done'].find(s => t.classList.contains('status-' + s)) || 'todo';
+        totalWeight += WEIGHT[status];
+        totalCount++;
+        if (status === 'done') totalDone++;
+      });
+    });
+    const overallPct = totalCount === 0 ? 0 : Math.round((totalWeight / totalCount) * 100);
+    document.getElementById('overallPercent').textContent = overallPct;
+    document.getElementById('overallBar').style.width = overallPct + '%';
+    document.getElementById('overallCount').textContent = totalDone + ' / ' + totalCount + ' タスク完了';
+  }
+
+  function saveState() {
+    const state = { tasks: [], expanded: [] };
+    document.querySelectorAll('.task').forEach((t, i) => {
+      const status = ['todo', 'progress', 'done'].find(s => t.classList.contains('status-' + s)) || 'todo';
+      state.tasks[i] = status;
+    });
+    document.querySelectorAll('.phase').forEach((p, i) => {
+      if (p.classList.contains('expanded')) state.expanded.push(i);
+    });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      const state = JSON.parse(raw);
+      document.querySelectorAll('.task').forEach((t, i) => {
+        const saved = state.tasks && state.tasks[i];
+        if (saved && ['todo', 'progress', 'done'].includes(saved)) {
+          t.classList.remove('status-todo', 'status-progress', 'status-done');
+          t.classList.add('status-' + saved);
+          const btn = t.querySelector('.status-btn');
+          btn.classList.remove('status-todo', 'status-progress', 'status-done');
+          btn.classList.add('status-' + saved);
+          btn.textContent = LABEL[saved];
+        }
+      });
+      if (state.expanded) {
+        document.querySelectorAll('.phase').forEach((p, i) => {
+          if (state.expanded.includes(i)) p.classList.add('expanded');
+        });
+      }
+    } catch(e) { console.warn('load failed', e); }
+  }
+
+  function resetAll() {
+    if (!confirm('全タスクのステータスを初期状態に戻します。よろしいですか？')) return;
+    localStorage.removeItem(STORAGE_KEY);
+    location.reload();
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    loadState();
+    if (!localStorage.getItem(STORAGE_KEY)) {
+      document.querySelector('.phase[data-phase="1"]').classList.add('expanded');
+      document.querySelector('.phase[data-phase="3"]').classList.add('expanded');
+    }
+    updateAllProgress();
+  });
+</script>
+
+</body>
+</html>
