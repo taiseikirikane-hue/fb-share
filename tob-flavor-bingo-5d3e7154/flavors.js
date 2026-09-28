@@ -1,0 +1,76 @@
+/**
+ * FRU+TAS フレーバービンゴ フレーバーマスタ
+ * ------------------------------------------------------------
+ * 全62種類のフレーバーデータ。順番＝盤面配置順。
+ * 差し替え手順は README.md を参照。
+ *
+ * id       : 一意ID（重複禁止・変更しない）
+ * name     : フレーバー名（英字表記）
+ * nameJa   : フレーバー名（日本語表記、任意）
+ * color    : マスの色（HEXカラー）
+ * category : カテゴリ（fruit / mint / dessert / spice / floral / drink）
+ */
+const FLAVORS = [
+  { id: 1,  name: "Blueberry Mint",   nameJa: "ブルーベリーミント",   color: "#4E7BE0", category: "fruit" },
+  { id: 2,  name: "Peach Ice",        nameJa: "ピーチアイス",         color: "#F4A6B8", category: "fruit" },
+  { id: 3,  name: "Double Apple",     nameJa: "ダブルアップル",       color: "#D14545", category: "fruit" },
+  { id: 4,  name: "Mango Tango",      nameJa: "マンゴータンゴ",       color: "#F5A623", category: "fruit" },
+  { id: 5,  name: "Grape Fizz",       nameJa: "グレープフィズ",       color: "#6A4B9E", category: "fruit" },
+  { id: 6,  name: "Lemon Zest",       nameJa: "レモンゼスト",         color: "#F7D33C", category: "fruit" },
+  { id: 7,  name: "Watermelon",       nameJa: "スイカ",               color: "#E6547A", category: "fruit" },
+  { id: 8,  name: "Cool Mint",        nameJa: "クールミント",         color: "#4FC3A1", category: "mint" },
+  { id: 9,  name: "Strawberry Milk",  nameJa: "ストロベリーミルク",   color: "#F0A5C2", category: "dessert" },
+  { id: 10, name: "Cinnamon Roll",    nameJa: "シナモンロール",       color: "#B87333", category: "dessert" },
+  { id: 11, name: "Green Apple",      nameJa: "グリーンアップル",     color: "#7CB342", category: "fruit" },
+  { id: 12, name: "Passion Fruit",    nameJa: "パッションフルーツ",   color: "#FF7043", category: "fruit" },
+  { id: 13, name: "Lychee Rose",      nameJa: "ライチローズ",         color: "#EF7BAA", category: "floral" },
+  { id: 14, name: "Vanilla Cream",    nameJa: "バニラクリーム",       color: "#EDD9A3", category: "dessert" },
+  { id: 15, name: "Kiwi Cooler",      nameJa: "キウイクーラー",       color: "#8BC34A", category: "fruit" },
+  { id: 16, name: "Cherry Bomb",      nameJa: "チェリーボム",         color: "#C62828", category: "fruit" },
+  { id: 17, name: "Melon Splash",     nameJa: "メロンスプラッシュ",   color: "#66BB6A", category: "fruit" },
+  { id: 18, name: "Pineapple Sun",    nameJa: "パイナップルサン",     color: "#FDD835", category: "fruit" },
+  { id: 19, name: "Coconut Sky",      nameJa: "ココナッツスカイ",     color: "#E8F1F5", category: "dessert" },
+  { id: 20, name: "Berry Mix",        nameJa: "ベリーミックス",       color: "#8E24AA", category: "fruit" },
+  { id: 21, name: "Spearmint",        nameJa: "スペアミント",         color: "#5EC9A8", category: "mint" },
+  { id: 22, name: "Chocolate Mint",   nameJa: "チョコミント",         color: "#5D4037", category: "dessert" },
+  { id: 23, name: "Guava Wave",       nameJa: "グアバウェーブ",       color: "#F48FB1", category: "fruit" },
+  { id: 24, name: "Orange Zest",      nameJa: "オレンジゼスト",       color: "#FB8C00", category: "fruit" },
+  { id: 25, name: "Rose Petal",       nameJa: "ローズペタル",         color: "#EC407A", category: "floral" },
+  { id: 26, name: "Cardamom",         nameJa: "カルダモン",           color: "#9CCC65", category: "spice" },
+  { id: 27, name: "Earl Grey",        nameJa: "アールグレイ",         color: "#7E57C2", category: "drink" },
+  { id: 28, name: "Matcha Latte",     nameJa: "抹茶ラテ",             color: "#7CB342", category: "drink" },
+  { id: 29, name: "Espresso",         nameJa: "エスプレッソ",         color: "#4E342E", category: "drink" },
+  { id: 30, name: "Caramel Nut",      nameJa: "キャラメルナッツ",     color: "#A1887F", category: "dessert" },
+  { id: 31, name: "Yuzu Ice",         nameJa: "ゆずアイス",           color: "#FFEB3B", category: "fruit" },
+  { id: 32, name: "Plum Wine",        nameJa: "プラムワイン",         color: "#8E4585", category: "fruit" },
+  { id: 33, name: "Fig Honey",        nameJa: "フィグハニー",         color: "#795548", category: "fruit" },
+  { id: 34, name: "Pear Breeze",      nameJa: "ペアーブリーズ",       color: "#C5E1A5", category: "fruit" },
+  { id: 35, name: "Apricot Sun",      nameJa: "アプリコットサン",     color: "#FFB74D", category: "fruit" },
+  { id: 36, name: "Blackberry Ice",   nameJa: "ブラックベリーアイス", color: "#4A148C", category: "fruit" },
+  { id: 37, name: "Raspberry Fizz",   nameJa: "ラズベリーフィズ",     color: "#D81B60", category: "fruit" },
+  { id: 38, name: "Cranberry Splash", nameJa: "クランベリースプラッシュ", color: "#B71C1C", category: "fruit" },
+  { id: 39, name: "Papaya Sunset",    nameJa: "パパイヤサンセット",   color: "#FF7043", category: "fruit" },
+  { id: 40, name: "Dragon Fruit",     nameJa: "ドラゴンフルーツ",     color: "#EC407A", category: "fruit" },
+  { id: 41, name: "Lavender Field",   nameJa: "ラベンダーフィールド", color: "#9575CD", category: "floral" },
+  { id: 42, name: "Jasmine Tea",      nameJa: "ジャスミンティー",     color: "#FFF59D", category: "drink" },
+  { id: 43, name: "Hibiscus",         nameJa: "ハイビスカス",         color: "#E53935", category: "floral" },
+  { id: 44, name: "Ginger Kick",      nameJa: "ジンジャーキック",     color: "#FFA726", category: "spice" },
+  { id: 45, name: "Anise Cool",       nameJa: "アニスクール",         color: "#78909C", category: "spice" },
+  { id: 46, name: "Clove Warm",       nameJa: "クローブウォーム",     color: "#6D4C41", category: "spice" },
+  { id: 47, name: "Tiramisu",         nameJa: "ティラミス",           color: "#8D6E63", category: "dessert" },
+  { id: 48, name: "Cheesecake",       nameJa: "チーズケーキ",         color: "#F5E1A4", category: "dessert" },
+  { id: 49, name: "Honeydew",         nameJa: "ハニーデュー",         color: "#AED581", category: "fruit" },
+  { id: 50, name: "Pomegranate",      nameJa: "ザクロ",               color: "#AD1457", category: "fruit" },
+  { id: 51, name: "Elderflower",      nameJa: "エルダーフラワー",     color: "#F0F4C3", category: "floral" },
+  { id: 52, name: "Cola Splash",      nameJa: "コーラスプラッシュ",   color: "#3E2723", category: "drink" },
+  { id: 53, name: "Ginseng Root",     nameJa: "ジンセンルート",       color: "#A1887F", category: "spice" },
+  { id: 54, name: "Bubblegum",        nameJa: "バブルガム",           color: "#F48FB1", category: "dessert" },
+  { id: 55, name: "Cotton Candy",     nameJa: "コットンキャンディ",   color: "#CE93D8", category: "dessert" },
+  { id: 56, name: "Sakura Bloom",     nameJa: "サクラブルーム",       color: "#F8BBD0", category: "floral" },
+  { id: 57, name: "Iced Coffee",      nameJa: "アイスコーヒー",       color: "#3E2723", category: "drink" },
+  { id: 58, name: "Mojito Lime",      nameJa: "モヒートライム",       color: "#9CCC65", category: "mint" },
+  { id: 59, name: "Bergamot",         nameJa: "ベルガモット",         color: "#DCE775", category: "drink" },
+  { id: 60, name: "Almond Milk",      nameJa: "アーモンドミルク",     color: "#EFEBE9", category: "dessert" },
+  { id: 61, name: "Tropical Storm",   nameJa: "トロピカルストーム",   color: "#00BCD4", category: "fruit" },
+  { id: 62, name: "Midnight Berry",   nameJa: "ミッドナイトベリー",   color: "#311B92", category: "fruit" },
+];

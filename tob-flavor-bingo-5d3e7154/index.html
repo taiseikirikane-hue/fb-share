@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="theme-color" content="#4c1d95" />
+<title>FRU+TAS フレーバービンゴ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+<style>
+  :root {
+    --brand: #7c3aed;
+    --brand-strong: #a78bfa;
+    --brand-glow: rgba(167, 139, 250, 0.55);
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+    font-family: 'Inter', 'Noto Sans JP', system-ui, sans-serif;
+    color: #fff;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background: #1e1b4b;
+  }
+
+  body {
+    position: relative;
+    overflow-x: hidden;
+    background:
+      radial-gradient(ellipse at 15% 8%, rgba(236, 72, 153, 0.35), transparent 55%),
+      radial-gradient(ellipse at 88% 12%, rgba(59, 130, 246, 0.30), transparent 55%),
+      radial-gradient(ellipse at 50% 100%, rgba(250, 204, 21, 0.20), transparent 60%),
+      linear-gradient(160deg, #4c1d95 0%, #1e1b4b 45%, #0f0a2e 100%);
+    background-attachment: fixed;
+  }
+
+  .brand-text {
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    background: linear-gradient(90deg, #fde047 0%, #f0abfc 55%, #c4b5fd 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .glass {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    backdrop-filter: blur(20px) saturate(140%);
+    box-shadow:
+      0 20px 60px rgba(0, 0, 0, 0.35),
+      inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  }
+
+  /* ---- 盤面 ---- */
+  .board {
+    display: grid;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  @media (max-width: 640px) {
+    .board { gap: 4px; }
+  }
+
+  .cell {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 4px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.18s ease, border-color 0.2s ease, background 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .cell:hover:not(.stamped):not(.free):not(.logo) {
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.30);
+    background: rgba(255, 255, 255, 0.08);
+  }
+  .cell.is-open .order-btn { opacity: 1; pointer-events: auto; }
+
+  .cell-dot {
+    width: 26%;
+    height: 26%;
+    border-radius: 50%;
+    box-shadow:
+      0 2px 8px rgba(0, 0, 0, 0.35),
+      inset 0 -2px 4px rgba(0, 0, 0, 0.20),
+      inset 0 2px 4px rgba(255, 255, 255, 0.35);
+    margin-bottom: 4px;
+    transition: transform 0.25s ease;
+  }
+  .cell-name {
+    font-size: 8px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.75);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    word-break: break-word;
+  }
+  @media (min-width: 641px) {
+    .cell-name { font-size: 10px; }
+  }
+  .cell-name-ja {
+    font-size: 7px;
+    color: rgba(255, 255, 255, 0.50);
+    margin-top: 2px;
+    line-height: 1.1;
+  }
+  @media (min-width: 641px) {
+    .cell-name-ja { font-size: 9px; }
+  }
+
+  /* 注文ボタン（ホバー/タップで出現） */
+  .order-btn {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.95) 0%, rgba(217, 70, 239, 0.95) 100%);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 900;
+    border: 0;
+    border-radius: 10px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+    letter-spacing: 0.02em;
+  }
+  @media (min-width: 641px) {
+    .order-btn { font-size: 12px; }
+    .cell:hover .order-btn { opacity: 1; pointer-events: auto; }
+  }
+
+  /* スタンプ済み演出 */
+  .cell.stamped {
+    background: rgba(255, 255, 255, 0.10);
+    border-color: rgba(255, 255, 255, 0.35);
+    cursor: default;
+  }
+  .cell.stamped .cell-dot {
+    transform: scale(1.15);
+  }
+  .cell.stamped .cell-name,
+  .cell.stamped .cell-name-ja {
+    color: rgba(255, 255, 255, 0.95);
+  }
+  .cell.stamped::after {
+    content: "";
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #fde047;
+    box-shadow:
+      0 0 0 2px rgba(0, 0, 0, 0.15),
+      0 0 12px rgba(253, 224, 71, 0.85);
+  }
+  .cell.stamped .order-btn { display: none; }
+
+  /* スタンプ発火時のポン演出 */
+  @keyframes stampPop {
+    0% { transform: scale(0.85); }
+    45% { transform: scale(1.15); }
+    75% { transform: scale(0.98); }
+    100% { transform: scale(1); }
+  }
+  .cell.just-stamped {
+    animation: stampPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes ring {
+    0% { box-shadow: 0 0 0 0 rgba(253, 224, 71, 0.7); }
+    100% { box-shadow: 0 0 0 22px rgba(253, 224, 71, 0); }
+  }
+  .cell.just-stamped::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 10px;
+    animation: ring 0.6s ease-out;
+    pointer-events: none;
+  }
+
+  /* FREE / ロゴマス */
+  .cell.free {
+    background: linear-gradient(135deg, rgba(253, 224, 71, 0.28) 0%, rgba(217, 70, 239, 0.28) 100%);
+    border: 1px solid rgba(253, 224, 71, 0.5);
+    cursor: default;
+  }
+  .cell.free .free-label {
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    color: #fde047;
+    text-shadow: 0 0 8px rgba(253, 224, 71, 0.6);
+  }
+  @media (min-width: 641px) {
+    .cell.free .free-label { font-size: 14px; }
+  }
+  .cell.logo {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.55) 0%, rgba(217, 70, 239, 0.55) 100%);
+    border: 1px solid rgba(167, 139, 250, 0.6);
+    cursor: default;
+  }
+  .cell.logo .logo-label {
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    background: linear-gradient(90deg, #fde047 0%, #f0abfc 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1;
+  }
+  @media (min-width: 641px) {
+    .cell.logo .logo-label { font-size: 14px; }
+  }
+
+  /* ライン成立ハイライト */
+  .cell.in-line {
+    box-shadow:
+      inset 0 0 0 2px #fde047,
+      0 0 18px rgba(253, 224, 71, 0.55);
+  }
+
+  /* 進捗バー */
+  .progress-track {
+    height: 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #fde047 0%, #f0abfc 50%, #7c3aed 100%);
+    transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 12px rgba(253, 224, 71, 0.5);
+  }
+
+  /* リワードモーダル */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+    padding: 20px;
+  }
+  .modal-backdrop.show {
+    display: flex;
+    animation: fadeIn 0.25s ease both;
+  }
+  .modal-panel {
+    background: linear-gradient(160deg, #4c1d95 0%, #1e1b4b 100%);
+    border: 1px solid rgba(253, 224, 71, 0.5);
+    border-radius: 24px;
+    padding: 32px 24px;
+    max-width: 380px;
+    width: 100%;
+    text-align: center;
+    box-shadow:
+      0 20px 80px rgba(0, 0, 0, 0.55),
+      0 0 60px rgba(253, 224, 71, 0.25);
+    animation: modalPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+  @keyframes modalPop {
+    from { opacity: 0; transform: scale(0.85); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .bingo-headline {
+    font-size: 48px;
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    background: linear-gradient(180deg, #fde047 0%, #f0abfc 60%, #a78bfa 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1;
+    text-shadow: 0 0 30px rgba(253, 224, 71, 0.3);
+    margin-bottom: 8px;
+  }
+
+  .reward-amount {
+    font-size: 40px;
+    font-weight: 900;
+    color: #fde047;
+    letter-spacing: -0.03em;
+    text-shadow: 0 0 24px rgba(253, 224, 71, 0.5);
+    margin: 12px 0 6px;
+  }
+
+  .primary-btn {
+    padding: 14px 28px;
+    background: linear-gradient(135deg, #7c3aed 0%, #d946ef 100%);
+    color: #fff;
+    font-weight: 900;
+    font-size: 14px;
+    letter-spacing: 0.02em;
+    border: 0;
+    border-radius: 999px;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(124, 58, 237, 0.5);
+    transition: transform 0.15s ease;
+  }
+  .primary-btn:hover { transform: translateY(-1px); }
+
+  .ghost-btn {
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 700;
+    font-size: 13px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .ghost-btn:hover {
+    background: rgba(255, 255, 255, 0.14);
+  }
+
+  /* 統計カード */
+  .stat-card {
+    padding: 14px 12px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+  }
+  .stat-value {
+    font-size: 22px;
+    font-weight: 900;
+    color: #fff;
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .stat-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.55);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  /* 現在のリワードバッジ */
+  .reward-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 800;
+    background: linear-gradient(135deg, rgba(253, 224, 71, 0.20) 0%, rgba(240, 171, 252, 0.20) 100%);
+    border: 1px solid rgba(253, 224, 71, 0.45);
+    color: #fde047;
+  }
+  .reward-badge.empty {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.5);
+  }
+</style>
+</head>
+<body class="min-h-screen">
+  <div class="max-w-3xl mx-auto px-4 sm:px-5 py-6 sm:py-10">
+
+    <!-- ヘッダー -->
+    <header class="mb-5 sm:mb-6">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="badge">tob</span>
+        <span class="badge">flavor bingo</span>
+      </div>
+      <h1 class="text-2xl sm:text-3xl font-black leading-tight">
+        <span class="brand-text">FRU+TAS</span><span class="text-white/85 text-lg sm:text-xl">（フルタス）</span>
+        <br />
+        <span class="text-white">全 62 種、埋めたら勝ち。</span>
+      </h1>
+      <p class="mt-2 text-xs sm:text-sm text-white/60">
+        注文したフレーバーがマスになる。ライン揃えて割引ゲット、コンプで大特典。
+      </p>
+    </header>
+
+    <!-- 進捗パネル -->
+    <section class="glass rounded-2xl p-4 sm:p-5 mb-4">
+      <div class="flex items-center justify-between mb-3">
+        <span class="text-xs font-bold text-white/70 tracking-wider uppercase">達成状況</span>
+        <span id="current-reward" class="reward-badge empty">まだクーポン未達</span>
+      </div>
+      <div class="grid grid-cols-3 gap-2 sm:gap-3 mb-3">
+        <div class="stat-card text-center">
+          <div class="stat-value"><span id="stat-stamped">0</span><span class="text-white/50 text-sm"> / 62</span></div>
+          <div class="stat-label">スタンプ</div>
+        </div>
+        <div class="stat-card text-center">
+          <div class="stat-value" id="stat-lines">0</div>
+          <div class="stat-label">ライン達成</div>
+        </div>
+        <div class="stat-card text-center">
+          <div class="stat-value">¥<span id="stat-discount">0</span></div>
+          <div class="stat-label">獲得割引</div>
+        </div>
+      </div>
+      <div class="progress-track">
+        <div id="progress-fill" class="progress-fill" style="width: 0%;"></div>
+      </div>
+    </section>
+
+    <!-- ビンゴ盤面 -->
+    <section class="glass rounded-2xl p-3 sm:p-5 mb-4">
+      <div id="board" class="board" aria-label="フレーバービンゴ盤面"></div>
+    </section>
+
+    <!-- コントロール -->
+    <section class="flex items-center justify-between gap-3 mb-8">
+      <p class="text-[11px] text-white/45 leading-relaxed">
+        マスをタップ / ホバーで<br class="sm:hidden" />「注文する」ボタン。
+      </p>
+      <div class="flex gap-2">
+        <button id="btn-demo" class="ghost-btn" type="button">デモ埋め</button>
+        <button id="btn-reset" class="ghost-btn" type="button">リセット</button>
+      </div>
+    </section>
+
+    <!-- フッター -->
+    <footer class="text-center text-xs text-white/40 pb-4">
+      <p>FRU+TAS フレーバービンゴ（モック）</p>
+      <p class="mt-1">フレーバーは <code class="text-white/60">flavors.js</code> / 特典は <code class="text-white/60">rewards.js</code> で管理</p>
+    </footer>
+
+  </div>
+
+  <!-- リワードモーダル -->
+  <div id="modal" class="modal-backdrop" role="dialog" aria-modal="true">
+    <div class="modal-panel">
+      <div class="bingo-headline" id="modal-headline">BINGO!</div>
+      <p class="text-white/80 text-sm" id="modal-sub">1 ライン達成しました</p>
+      <div class="reward-amount" id="modal-amount">¥500 OFF</div>
+      <p class="text-white/60 text-xs mb-6" id="modal-label">次回注文で使えるクーポンを獲得しました</p>
+      <button id="modal-close" class="primary-btn" type="button">続ける</button>
+    </div>
+  </div>
+
+<script src="flavors.js"></script>
+<script src="rewards.js"></script>
+<script>
+  const $ = (id) => document.getElementById(id);
+
+  // 盤面レイアウト：8×8=64マス。中央 (r=3,c=3) と (r=3,c=4) を特殊マス（FREE / LOGO）にして、残り 62 マスに FLAVORS を配置。
+  const ROWS = 8;
+  const COLS = 8;
+  const FREE_CELLS = [
+    { r: 3, c: 3, type: 'free' },
+    { r: 3, c: 4, type: 'logo' },
+  ];
+
+  // 盤面グリッドを作る
+  function buildLayout() {
+    const layout = [];
+    let flavorIdx = 0;
+    for (let r = 0; r < ROWS; r++) {
+      const row = [];
+      for (let c = 0; c < COLS; c++) {
+        const free = FREE_CELLS.find(f => f.r === r && f.c === c);
+        if (free) {
+          row.push({ type: free.type, r, c });
+        } else {
+          const flavor = FLAVORS[flavorIdx];
+          if (!flavor) {
+            // フレーバー不足時は空マス扱い
+            row.push({ type: 'empty', r, c });
+          } else {
+            row.push({ type: 'flavor', r, c, flavor, stamped: false });
+          }
+          flavorIdx++;
+        }
+      }
+      layout.push(row);
+    }
+    return layout;
+  }
+
+  let layout = buildLayout();
+  let earnedTier = null; // 'oneLine' | 'threeLines' | 'complete'
+  let currentDiscount = 0;
+
+  // ---- 描画 ----
+  function renderBoard() {
+    const boardEl = $('board');
+    boardEl.innerHTML = '';
+    for (let r = 0; r < ROWS; r++) {
+      for (let c = 0; c < COLS; c++) {
+        const cell = layout[r][c];
+        const el = document.createElement('div');
+        el.className = 'cell';
+        el.dataset.r = r;
+        el.dataset.c = c;
+
+        if (cell.type === 'free') {
+          el.classList.add('free', 'stamped');
+          el.innerHTML = `<span class="free-label">FREE</span>`;
+        } else if (cell.type === 'logo') {
+          el.classList.add('logo', 'stamped');
+          el.innerHTML = `<span class="logo-label">FRU+TAS</span>`;
+        } else if (cell.type === 'flavor') {
+          if (cell.stamped) el.classList.add('stamped');
+          el.innerHTML = `
+            <div class="cell-dot" style="background:${cell.flavor.color};"></div>
+            <div class="cell-name">${cell.flavor.name}</div>
+            <div class="cell-name-ja">${cell.flavor.nameJa || ''}</div>
+            <button class="order-btn" type="button" aria-label="${cell.flavor.name} を注文する">注文する</button>
+          `;
+          // モバイル: セルタップで注文ボタン表示、再タップで発火
+          el.addEventListener('click', (e) => {
+            if (cell.stamped) return;
+            const isBtn = e.target.classList.contains('order-btn');
+            if (isBtn || el.classList.contains('is-open')) {
+              stampCell(r, c, el);
+            } else {
+              // 他マスの is-open を閉じる
+              document.querySelectorAll('.cell.is-open').forEach(x => x.classList.remove('is-open'));
+              el.classList.add('is-open');
+            }
+          });
+        } else {
+          // empty
+          el.style.opacity = 0.3;
+        }
+        boardEl.appendChild(el);
+      }
+    }
+  }
+
+  // ---- スタンプ処理 ----
+  function stampCell(r, c, el) {
+    const cell = layout[r][c];
+    if (cell.type !== 'flavor' || cell.stamped) return;
+    cell.stamped = true;
+    el.classList.add('stamped', 'just-stamped');
+    el.classList.remove('is-open');
+    setTimeout(() => el.classList.remove('just-stamped'), 500);
+    // 軽いスパーク
+    sparkAt(el);
+    evaluate();
+  }
+
+  // ---- スパーク（confetti 使用、軽量パーティクル） ----
+  function sparkAt(el) {
+    if (typeof confetti !== 'function') return;
+    const rect = el.getBoundingClientRect();
+    const x = (rect.left + rect.width / 2) / window.innerWidth;
+    const y = (rect.top + rect.height / 2) / window.innerHeight;
+    confetti({
+      particleCount: 12,
+      spread: 40,
+      startVelocity: 20,
+      scalar: 0.6,
+      ticks: 60,
+      origin: { x, y },
+      colors: ['#fde047', '#f0abfc', '#a78bfa', '#ffffff'],
+      disableForReducedMotion: true,
+    });
+  }
+
+  // ---- ライン判定 ----
+  // 特殊マス（free/logo）は常に埋まっている扱い
+  function isFilled(cell) {
+    if (!cell) return false;
+    if (cell.type === 'free' || cell.type === 'logo') return true;
+    if (cell.type === 'flavor') return cell.stamped;
+    return false;
+  }
+
+  function countLines() {
+    const lineCells = new Set();
+    let lines = 0;
+
+    // 行
+    for (let r = 0; r < ROWS; r++) {
+      if (layout[r].every(isFilled)) {
+        lines++;
+        for (let c = 0; c < COLS; c++) lineCells.add(`${r},${c}`);
+      }
+    }
+    // 列
+    for (let c = 0; c < COLS; c++) {
+      let ok = true;
+      for (let r = 0; r < ROWS; r++) {
+        if (!isFilled(layout[r][c])) { ok = false; break; }
+      }
+      if (ok) {
+        lines++;
+        for (let r = 0; r < ROWS; r++) lineCells.add(`${r},${c}`);
+      }
+    }
+    // 斜め ↘
+    let ok1 = true;
+    for (let i = 0; i < ROWS; i++) {
+      if (!isFilled(layout[i][i])) { ok1 = false; break; }
+    }
+    if (ok1) {
+      lines++;
+      for (let i = 0; i < ROWS; i++) lineCells.add(`${i},${i}`);
+    }
+    // 斜め ↙
+    let ok2 = true;
+    for (let i = 0; i < ROWS; i++) {
+      if (!isFilled(layout[i][COLS - 1 - i])) { ok2 = false; break; }
+    }
+    if (ok2) {
+      lines++;
+      for (let i = 0; i < ROWS; i++) lineCells.add(`${i},${COLS - 1 - i}`);
+    }
+
+    return { lines, lineCells };
+  }
+
+  function countStamped() {
+    let n = 0;
+    for (let r = 0; r < ROWS; r++) {
+      for (let c = 0; c < COLS; c++) {
+        const cell = layout[r][c];
+        if (cell.type === 'flavor' && cell.stamped) n++;
+      }
+    }
+    return n;
+  }
+
+  // ---- 評価・演出発火 ----
+  function evaluate() {
+    const stamped = countStamped();
+    const { lines, lineCells } = countLines();
+
+    // ライン強調
+    document.querySelectorAll('.cell.in-line').forEach(el => el.classList.remove('in-line'));
+    lineCells.forEach(key => {
+      const [r, c] = key.split(',');
+      const el = document.querySelector(`.cell[data-r="${r}"][data-c="${c}"]`);
+      if (el) el.classList.add('in-line');
+    });
+
+    // 統計
+    $('stat-stamped').textContent = stamped;
+    $('stat-lines').textContent = lines;
+    $('progress-fill').style.width = ((stamped / 62) * 100).toFixed(1) + '%';
+
+    // リワード判定（段階アップの時だけ発火）
+    let newTier = null;
+    if (stamped >= 62) newTier = 'complete';
+    else if (lines >= 3) newTier = 'threeLines';
+    else if (lines >= 1) newTier = 'oneLine';
+
+    const tierOrder = { oneLine: 1, threeLines: 2, complete: 3 };
+    const prevRank = earnedTier ? tierOrder[earnedTier] : 0;
+    const newRank = newTier ? tierOrder[newTier] : 0;
+
+    if (newRank > prevRank && newTier) {
+      earnedTier = newTier;
+      const reward = REWARDS[newTier];
+      currentDiscount = reward.discountYen;
+      showRewardModal(newTier, reward, lines);
+    }
+
+    // バッジ更新
+    updateRewardBadge();
+    $('stat-discount').textContent = currentDiscount.toLocaleString('ja-JP');
+  }
+
+  function updateRewardBadge() {
+    const badge = $('current-reward');
+    if (!earnedTier) {
+      badge.textContent = 'まだクーポン未達';
+      badge.classList.add('empty');
+    } else {
+      badge.textContent = REWARDS[earnedTier].label;
+      badge.classList.remove('empty');
+    }
+  }
+
+  // ---- モーダル ----
+  function showRewardModal(tier, reward, lines) {
+    const headline = tier === 'complete' ? 'COMPLETE!' : 'BINGO!';
+    const sub = tier === 'complete'
+      ? '全 62 種コンプリート達成'
+      : `${lines} ライン達成しました`;
+    $('modal-headline').textContent = headline;
+    $('modal-sub').textContent = sub;
+    $('modal-amount').textContent = '¥' + reward.discountYen.toLocaleString('ja-JP') + ' OFF';
+    $('modal-label').textContent = reward.label;
+    $('modal').classList.add('show');
+
+    // 派手系 confetti
+    if (typeof confetti === 'function') {
+      const burst = tier === 'complete' ? 220 : (tier === 'threeLines' ? 120 : 60);
+      confetti({
+        particleCount: burst,
+        spread: 90,
+        startVelocity: 45,
+        origin: { x: 0.5, y: 0.6 },
+        colors: ['#fde047', '#f0abfc', '#a78bfa', '#7c3aed', '#ffffff'],
+        disableForReducedMotion: true,
+      });
+      if (tier === 'complete') {
+        // 追加バーストで大演出
+        setTimeout(() => {
+          confetti({ particleCount: 120, spread: 120, origin: { x: 0.2, y: 0.5 }, colors: ['#fde047', '#f0abfc'], disableForReducedMotion: true });
+          confetti({ particleCount: 120, spread: 120, origin: { x: 0.8, y: 0.5 }, colors: ['#a78bfa', '#7c3aed'], disableForReducedMotion: true });
+        }, 250);
+      }
+    }
+  }
+
+  $('modal-close').addEventListener('click', () => {
+    $('modal').classList.remove('show');
+  });
+  $('modal').addEventListener('click', (e) => {
+    if (e.target.id === 'modal') $('modal').classList.remove('show');
+  });
+
+  // ---- リセット ----
+  $('btn-reset').addEventListener('click', () => {
+    layout = buildLayout();
+    earnedTier = null;
+    currentDiscount = 0;
+    renderBoard();
+    evaluate();
+  });
+
+  // ---- デモ埋め（1ラインを短時間で埋める） ----
+  $('btn-demo').addEventListener('click', async () => {
+    // 未達成なら1行目、次は列、次はコンプまで段階的
+    const targets = [];
+    if (!earnedTier) {
+      // 1行目（8マスのうちフレーバーマスのみ、free/logo は除外）
+      for (let c = 0; c < COLS; c++) {
+        const cell = layout[0][c];
+        if (cell.type === 'flavor' && !cell.stamped) targets.push([0, c]);
+      }
+    } else if (earnedTier === 'oneLine') {
+      // 追加で列2本埋めて3ラインに
+      for (let r = 0; r < ROWS; r++) {
+        const cell = layout[r][0];
+        if (cell.type === 'flavor' && !cell.stamped) targets.push([r, 0]);
+      }
+      for (let r = 0; r < ROWS; r++) {
+        const cell = layout[r][COLS - 1];
+        if (cell.type === 'flavor' && !cell.stamped) targets.push([r, COLS - 1]);
+      }
+    } else if (earnedTier === 'threeLines') {
+      // 全マス埋め
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          const cell = layout[r][c];
+          if (cell.type === 'flavor' && !cell.stamped) targets.push([r, c]);
+        }
+      }
+    }
+    for (const [r, c] of targets) {
+      const el = document.querySelector(`.cell[data-r="${r}"][data-c="${c}"]`);
+      if (el) stampCell(r, c, el);
+      await new Promise(res => setTimeout(res, 60));
+    }
+  });
+
+  // 盤外タップで is-open 解除
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.cell')) {
+      document.querySelectorAll('.cell.is-open').forEach(x => x.classList.remove('is-open'));
+    }
+  });
+
+  // 初期描画
+  renderBoard();
+  evaluate();
+</script>
+</body>
+</html>
