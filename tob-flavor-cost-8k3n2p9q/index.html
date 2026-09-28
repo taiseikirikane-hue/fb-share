@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="theme-color" content="#0f172a" />
+<title>tob フレーバーコストシミュレーター</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['Inter', 'Noto Sans JP', 'system-ui', 'sans-serif'],
+        },
+      },
+    },
+  };
+</script>
+<style>
+  :root {
+    --accent: #a78bfa;
+    --accent-strong: #c4b5fd;
+    --accent-glow: rgba(167, 139, 250, 0.55);
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+    font-family: 'Inter', 'Noto Sans JP', system-ui, sans-serif;
+    color: #fff;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background: #0f172a;
+  }
+
+  body {
+    position: relative;
+    overflow-x: hidden;
+    background:
+      radial-gradient(ellipse at 20% 10%, rgba(124, 58, 237, 0.55), transparent 55%),
+      radial-gradient(ellipse at 85% 15%, rgba(59, 130, 246, 0.35), transparent 55%),
+      radial-gradient(ellipse at 50% 100%, rgba(236, 72, 153, 0.25), transparent 60%),
+      linear-gradient(160deg, #4c1d95 0%, #1e1b4b 40%, #0f172a 100%);
+    background-attachment: fixed;
+  }
+
+  .glass {
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    -webkit-backdrop-filter: blur(24px) saturate(140%);
+    backdrop-filter: blur(24px) saturate(140%);
+    box-shadow:
+      0 20px 60px rgba(0, 0, 0, 0.35),
+      inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  }
+
+  .glass-inner {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+  }
+
+  .display-number {
+    font-family: 'Inter', 'Noto Sans JP', system-ui, sans-serif;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    background: linear-gradient(180deg, #ffffff 0%, #ddd6fe 60%, #a78bfa 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    text-shadow: 0 0 40px rgba(167, 139, 250, 0.25);
+    line-height: 0.95;
+  }
+
+  .segmented {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 999px;
+    padding: 4px;
+    display: inline-flex;
+  }
+  .segmented button {
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.6);
+    border-radius: 999px;
+    transition: all 0.2s ease;
+  }
+  .segmented button.active {
+    background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%);
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(124, 58, 237, 0.4);
+  }
+
+  .field-input {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: #fff;
+    font-weight: 700;
+    font-size: 20px;
+    padding: 14px 16px;
+    border-radius: 14px;
+    width: 100%;
+    transition: all 0.2s ease;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .field-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.18);
+    background: rgba(255, 255, 255, 0.09);
+  }
+
+  /* カスタムスライダー */
+  input[type="range"].slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 10px;
+    background: transparent;
+    outline: none;
+    margin: 12px 0;
+  }
+  input[type="range"].slider::-webkit-slider-runnable-track {
+    height: 10px;
+    border-radius: 999px;
+    background: linear-gradient(
+      to right,
+      #a78bfa 0%,
+      #7c3aed var(--fill, 50%),
+      rgba(255, 255, 255, 0.10) var(--fill, 50%),
+      rgba(255, 255, 255, 0.10) 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.10);
+  }
+  input[type="range"].slider::-moz-range-track {
+    height: 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.10);
+  }
+  input[type="range"].slider::-moz-range-progress {
+    height: 10px;
+    border-radius: 999px;
+    background: linear-gradient(to right, #a78bfa 0%, #7c3aed 100%);
+  }
+  input[type="range"].slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 30% 30%, #ffffff 0%, #ddd6fe 40%, #a78bfa 100%);
+    border: 2px solid #fff;
+    box-shadow:
+      0 4px 16px rgba(124, 58, 237, 0.6),
+      0 0 0 4px rgba(167, 139, 250, 0.15);
+    cursor: pointer;
+    margin-top: -9px;
+    transition: transform 0.15s ease;
+  }
+  input[type="range"].slider::-webkit-slider-thumb:hover {
+    transform: scale(1.08);
+  }
+  input[type="range"].slider::-moz-range-thumb {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 30% 30%, #ffffff 0%, #ddd6fe 40%, #a78bfa 100%);
+    border: 2px solid #fff;
+    box-shadow: 0 4px 16px rgba(124, 58, 237, 0.6);
+    cursor: pointer;
+  }
+
+  .metric-card {
+    padding: 20px;
+    border-radius: 18px;
+  }
+
+  .bar-track {
+    height: 44px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.06);
+    overflow: hidden;
+    position: relative;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    color: #fff;
+    font-weight: 800;
+    font-size: 14px;
+    transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
+  }
+  .bar-current {
+    background: linear-gradient(90deg, rgba(148, 163, 184, 0.6) 0%, rgba(100, 116, 139, 0.9) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+  }
+  .bar-after {
+    background: linear-gradient(90deg, #a78bfa 0%, #7c3aed 100%);
+    box-shadow: 0 4px 24px rgba(124, 58, 237, 0.5);
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .brand {
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    background: linear-gradient(90deg, #c4b5fd 0%, #f0abfc 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  @media (max-width: 640px) {
+    .display-number {
+      font-size: 64px !important;
+    }
+  }
+
+  .fade-in { animation: fadeIn 0.4s ease both; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body class="min-h-screen">
+  <div class="max-w-3xl mx-auto px-5 py-8 sm:py-12">
+
+    <!-- ヘッダー -->
+    <header class="mb-6 sm:mb-8">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="badge">tob</span>
+        <span class="badge">for shops</span>
+      </div>
+      <h1 class="text-2xl sm:text-3xl font-black leading-tight">
+        <span class="brand">FRU+TAS</span><span class="text-white/85 text-xl sm:text-2xl">（フルタス）</span>
+        <br class="sm:hidden" />
+        <span class="text-white">に切り替えると<br class="sm:hidden" />年間いくら削減できる？</span>
+      </h1>
+      <p class="mt-3 text-sm sm:text-base text-white/60">
+        現在のフレーバー使用量と、FRU+TAS 切替率を入力するだけ。
+      </p>
+    </header>
+
+    <!-- リアルタイム大数字 -->
+    <section class="glass rounded-3xl p-6 sm:p-8 mb-6">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-xs sm:text-sm font-bold text-white/70 tracking-wider uppercase">年間コストダウン額</span>
+        <span id="rate-badge" class="badge">切替率 50%</span>
+      </div>
+      <div class="flex items-end gap-2">
+        <span class="text-3xl sm:text-4xl font-black text-white/70">¥</span>
+        <span id="annual-saving" class="display-number" style="font-size: clamp(56px, 14vw, 112px);">0</span>
+      </div>
+      <div class="mt-4 flex flex-wrap gap-2 text-xs sm:text-sm text-white/60">
+        <span>月あたり <span id="monthly-saving" class="text-white font-bold">¥0</span></span>
+        <span class="text-white/25">/</span>
+        <span>1杯あたり <span id="per-cup-saving" class="text-white font-bold">¥0</span></span>
+      </div>
+    </section>
+
+    <!-- 入力パネル -->
+    <section class="glass rounded-3xl p-6 sm:p-8 mb-6 space-y-7">
+
+      <!-- 月間使用量 -->
+      <div>
+        <div class="flex items-center justify-between mb-3">
+          <label class="text-sm font-bold text-white/85">月間フレーバー使用量</label>
+          <div class="segmented" role="tablist" aria-label="単位切替">
+            <button id="unit-g" class="active" type="button">g</button>
+            <button id="unit-box" type="button">箱</button>
+          </div>
+        </div>
+        <div class="relative">
+          <input
+            id="usage-input"
+            class="field-input pr-16"
+            type="number"
+            inputmode="decimal"
+            min="0"
+            step="1"
+            value="1000"
+            aria-label="月間フレーバー使用量" />
+          <span id="usage-unit" class="absolute right-5 top-1/2 -translate-y-1/2 text-white/50 text-sm font-bold pointer-events-none">g / 月</span>
+        </div>
+        <p id="usage-hint" class="mt-2 text-xs text-white/45">= 20 箱 / 月</p>
+      </div>
+
+      <!-- 1日あたり提供杯数 -->
+      <div>
+        <label class="block text-sm font-bold text-white/85 mb-3">1 日あたりの提供杯数</label>
+        <div class="relative">
+          <input
+            id="cups-input"
+            class="field-input pr-16"
+            type="number"
+            inputmode="numeric"
+            min="0"
+            step="1"
+            value="30"
+            aria-label="1日あたりの提供杯数" />
+          <span class="absolute right-5 top-1/2 -translate-y-1/2 text-white/50 text-sm font-bold pointer-events-none">杯 / 日</span>
+        </div>
+      </div>
+
+      <!-- 切替率スライダー -->
+      <div>
+        <div class="flex items-center justify-between mb-1">
+          <label class="text-sm font-bold text-white/85">FRU+TAS 切替率</label>
+          <span id="rate-value" class="text-2xl font-black text-white">50<span class="text-base text-white/60">%</span></span>
+        </div>
+        <input
+          id="rate-slider"
+          class="slider"
+          type="range"
+          min="0"
+          max="100"
+          step="1"
+          value="50"
+          aria-label="FRU+TAS 切替率" />
+        <div class="flex justify-between text-[11px] text-white/40 font-bold">
+          <span>0%</span>
+          <span>25%</span>
+          <span>50%</span>
+          <span>75%</span>
+          <span>100%</span>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- 補助グラフ：切替前後の年間コスト比較 -->
+    <section class="glass rounded-3xl p-6 sm:p-8 mb-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-sm font-bold text-white/85 tracking-wider uppercase">切替前後の年間コスト</h2>
+        <span id="reduction-pct" class="badge">−0%</span>
+      </div>
+
+      <div class="space-y-4">
+        <div>
+          <div class="flex items-center justify-between text-xs text-white/60 mb-1.5">
+            <span>現状</span>
+            <span id="cost-current-label" class="text-white/80 font-bold">¥0</span>
+          </div>
+          <div class="bar-track">
+            <div id="bar-current" class="bar-fill bar-current" style="width: 100%;">現状</div>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between text-xs text-white/60 mb-1.5">
+            <span>切替後</span>
+            <span id="cost-after-label" class="text-white/80 font-bold">¥0</span>
+          </div>
+          <div class="bar-track">
+            <div id="bar-after" class="bar-fill bar-after" style="width: 100%;">切替後</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 mt-6">
+        <div class="glass-inner metric-card">
+          <p class="text-[11px] text-white/55 font-bold tracking-wider uppercase mb-1">1 箱あたり削減</p>
+          <p class="text-xl font-black text-white"><span id="per-box-saving">¥0</span></p>
+        </div>
+        <div class="glass-inner metric-card">
+          <p class="text-[11px] text-white/55 font-bold tracking-wider uppercase mb-1">年間削減 g 換算</p>
+          <p class="text-xl font-black text-white"><span id="saved-grams">0</span> <span class="text-sm text-white/60">g</span></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- フッター -->
+    <footer class="text-center text-xs text-white/40 mt-8 pb-4">
+      <p>tob フレーバーコストシミュレーター（モック）</p>
+      <p class="mt-1">単価は <code class="text-white/60">pricing.js</code> で管理</p>
+    </footer>
+
+  </div>
+
+<script src="pricing.js"></script>
+<script>
+  const $ = (id) => document.getElementById(id);
+
+  const state = {
+    unit: 'g',          // 'g' or 'box'
+    usage: 1000,        // 常に g で保持
+    cupsPerDay: 30,
+    ratePct: 50,
+  };
+
+  const yen = (n) => '¥' + Math.round(n).toLocaleString('ja-JP');
+  const int = (n) => Math.round(n).toLocaleString('ja-JP');
+
+  function recompute() {
+    const gramsPerMonth = state.usage;
+    const cupsPerDay = state.cupsPerDay;
+    const rate = state.ratePct / 100;
+
+    const diffPerGram = PRICING.currentFlavorPricePerGram - PRICING.frutasPricePerGram;
+
+    // 年間削減額 = 1gあたり差額 × 月間使用量 × 切替率 × 12
+    const annualSaving = diffPerGram * gramsPerMonth * rate * 12;
+    const monthlySaving = annualSaving / 12;
+
+    // 現状 vs 切替後（年間コスト）
+    const annualCostCurrent = PRICING.currentFlavorPricePerGram * gramsPerMonth * 12;
+    const annualCostAfter =
+      (PRICING.currentFlavorPricePerGram * gramsPerMonth * (1 - rate) +
+        PRICING.frutasPricePerGram * gramsPerMonth * rate) * 12;
+
+    // 1杯あたり削減額（月間の削減額 ÷ 月間杯数）
+    const monthlyCups = cupsPerDay * 30;
+    const perCupSaving = monthlyCups > 0 ? monthlySaving / monthlyCups : 0;
+
+    // 1箱あたり削減額
+    const perBoxSaving = diffPerGram * PRICING.gramsPerBox * rate;
+
+    // 年間削減 g 換算（削減額を FRU+TAS 単価で g に戻した参考値）
+    const savedGrams = PRICING.frutasPricePerGram > 0 ? annualSaving / PRICING.frutasPricePerGram : 0;
+
+    // 削減率
+    const reductionPct = annualCostCurrent > 0 ? (annualSaving / annualCostCurrent) * 100 : 0;
+
+    // ------- 描画 -------
+    $('annual-saving').textContent = int(Math.max(0, annualSaving));
+    $('monthly-saving').textContent = yen(Math.max(0, monthlySaving));
+    $('per-cup-saving').textContent = yen(Math.max(0, perCupSaving));
+    $('per-box-saving').textContent = yen(Math.max(0, perBoxSaving));
+    $('saved-grams').textContent = int(Math.max(0, savedGrams));
+
+    $('rate-badge').textContent = '切替率 ' + state.ratePct + '%';
+    $('rate-value').innerHTML = state.ratePct + '<span class="text-base text-white/60">%</span>';
+    $('reduction-pct').textContent = '−' + reductionPct.toFixed(1) + '%';
+
+    // バー比較（現状を100%基準）
+    const currentWidth = 100;
+    const afterWidth = annualCostCurrent > 0 ? (annualCostAfter / annualCostCurrent) * 100 : 100;
+    $('bar-current').style.width = currentWidth + '%';
+    $('bar-current').textContent = yen(annualCostCurrent);
+    $('bar-after').style.width = Math.max(8, afterWidth) + '%';
+    $('bar-after').textContent = yen(annualCostAfter);
+    $('cost-current-label').textContent = yen(annualCostCurrent);
+    $('cost-after-label').textContent = yen(annualCostAfter);
+
+    // スライダー塗り
+    $('rate-slider').style.setProperty('--fill', state.ratePct + '%');
+  }
+
+  // ---- 入力イベント ----
+  function updateUsageFromInput() {
+    const raw = parseFloat($('usage-input').value) || 0;
+    if (state.unit === 'g') {
+      state.usage = raw;
+      $('usage-hint').textContent = '= ' + (raw / PRICING.gramsPerBox).toFixed(1) + ' 箱 / 月';
+    } else {
+      state.usage = raw * PRICING.gramsPerBox;
+      $('usage-hint').textContent = '= ' + int(state.usage) + ' g / 月';
+    }
+    recompute();
+  }
+
+  $('usage-input').addEventListener('input', updateUsageFromInput);
+
+  $('cups-input').addEventListener('input', () => {
+    state.cupsPerDay = parseFloat($('cups-input').value) || 0;
+    recompute();
+  });
+
+  $('rate-slider').addEventListener('input', () => {
+    state.ratePct = parseInt($('rate-slider').value, 10);
+    recompute();
+  });
+
+  // 単位切替
+  function setUnit(unit) {
+    state.unit = unit;
+    if (unit === 'g') {
+      $('unit-g').classList.add('active');
+      $('unit-box').classList.remove('active');
+      $('usage-input').value = Math.round(state.usage);
+      $('usage-unit').textContent = 'g / 月';
+      $('usage-input').step = '10';
+    } else {
+      $('unit-box').classList.add('active');
+      $('unit-g').classList.remove('active');
+      $('usage-input').value = (state.usage / PRICING.gramsPerBox).toFixed(1);
+      $('usage-unit').textContent = '箱 / 月';
+      $('usage-input').step = '1';
+    }
+    updateUsageFromInput();
+  }
+  $('unit-g').addEventListener('click', () => setUnit('g'));
+  $('unit-box').addEventListener('click', () => setUnit('box'));
+
+  // 初期描画
+  recompute();
+</script>
+</body>
+</html>
