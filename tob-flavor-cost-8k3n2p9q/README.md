@@ -42,8 +42,15 @@ const PRICING = {
 
 ## 公開先
 
-Gist + raw.githack.com で URL 発行済み（切金様に別途共有）。
-差し替えを反映したい場合は、Gist 上の `pricing.js` を編集して保存すれば即座に反映される。
+GitHub Pages（`taiseikirikane-hue/fb-share` リポジトリ配下）で URL 発行済み。
+
+- 配信 URL: https://taiseikirikane-hue.github.io/fb-share/tob-flavor-cost-8k3n2p9q/
+- 配信元パス: `fb-share/tob-flavor-cost-8k3n2p9q/`
+- 検索エンジン非公開（リポジトリ直下の `robots.txt` で全体拒否）
+
+差し替えを反映したい場合は、リポジトリ `fb-share` の `tob-flavor-cost-8k3n2p9q/pricing.js` を編集して push すれば数分で反映される。
+
+（当初想定していた Gist + raw.githack.com は 2026-09 時点で Gist ホスティングが機能停止しているため、GitHub Pages に一本化）
 
 ---
 
